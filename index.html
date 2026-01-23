@@ -3,23 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مواقف برج مجدول - iOS 18</title>
+    <title>مواقف برج مجدول</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* CSS Variables */
         :root {
-            --bg-color: #f2f2f7;
-            --card-bg: rgba(255, 255, 255, 0.75);
-            --text-color: #000000;
-            --accent: #007aff;
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --input-bg: rgba(120, 120, 128, 0.12);
-            --content-width: 480px; /* Default Mobile */
-        }
-
-        body.dark {
             --bg-color: #000000;
             --card-bg: rgba(28, 28, 30, 0.85);
             --text-color: #ffffff;
@@ -28,312 +17,306 @@
             --input-bg: rgba(120, 120, 128, 0.25);
         }
 
-        /* Desktop Mode Override */
-        body.desktop-mode {
-            --content-width: 1100px;
-        }
-
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            transition: all 0.3s ease;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Fixed Logo Sizes */
-        .logo-majdoul {
-            height: 45px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .logo-link {
-            height: 35px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        /* Header */
+        /* Logos Header */
         header {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 10px 20px;
             border-bottom: 0.5px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
-        .header-content {
-            max-width: var(--content-width);
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .logo-majdoul { height: 40px; width: auto; }
+        .logo-link { height: 30px; width: auto; }
 
-        .nav-icons { display: flex; gap: 15px; align-items: center; }
-        .icon-btn { 
-            font-size: 18px; 
-            color: var(--accent); 
-            cursor: pointer; 
-            padding: 8px;
-            border-radius: 50%;
-            background: var(--input-bg);
-        }
-
-        /* Main Layout */
+        /* Main Content Area */
         .container {
-            max-width: var(--content-width);
-            margin: 0 auto;
-            padding: 20px;
-            transition: max-width 0.4s ease;
-        }
-
-        /* Desktop Grid Logic */
-        .view-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        body.desktop-mode .view-grid {
-            flex-direction: row;
-            align-items: flex-start;
-        }
-
-        body.desktop-mode .glass-card {
             flex: 1;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            padding-bottom: 100px; /* Space for nav */
         }
 
-        /* UI Elements */
+        .page-section { display: none; animation: fadeIn 0.3s ease; }
+        .page-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Glass Cards */
         .glass-card {
             background: var(--card-bg);
             backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
             border: 0.5px solid var(--glass-border);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
-        h2 { font-size: 18px; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; }
+        h2 { font-size: 22px; margin-bottom: 20px; color: var(--accent); text-align: center; }
 
+        /* Form Inputs */
         input, select {
-            width: 100%; padding: 12px; border-radius: 10px; border: none;
+            width: 100%; padding: 15px; border-radius: 12px; border: none;
             background: var(--input-bg); color: var(--text-color);
-            font-size: 16px; margin-bottom: 12px; box-sizing: border-box;
+            font-size: 16px; margin-bottom: 15px; box-sizing: border-box; outline: none;
         }
-
-        .search-results {
-            max-height: 200px; overflow-y: auto; border-radius: 10px; background: rgba(0,0,0,0.05);
-        }
-
-        body.dark .search-results { background: rgba(255,255,255,0.05); }
-
-        .result-item {
-            padding: 10px; border-bottom: 0.5px solid var(--glass-border); cursor: pointer;
-        }
-        .result-item:hover { background: var(--accent); color: white; }
 
         .btn-primary {
-            width: 100%; padding: 15px; background: var(--accent); color: white;
-            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;
+            width: 100%; padding: 16px; background: var(--accent); color: white;
+            border: none; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer;
         }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; }
-        .stat-box { background: var(--input-bg); padding: 10px; border-radius: 12px; text-align: center; }
+        /* Search Results */
+        .result-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px; border-radius: 15px; margin-bottom: 10px;
+            border: 0.5px solid var(--glass-border);
+            cursor: pointer;
+        }
+        .result-item:active { background: var(--accent); }
 
-        footer { text-align: center; padding: 40px; font-size: 12px; opacity: 0.6; }
+        /* Statistics Layout */
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 0.5px solid var(--glass-border);
+            font-size: 18px;
+        }
+        .stat-line span { font-weight: bold; color: var(--accent); }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 0.5px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 25px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #8e8e93;
+            font-size: 12px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .nav-item i { font-size: 22px; margin-bottom: 4px; display: block; }
+        .nav-item.active { color: var(--accent); }
 
     </style>
 </head>
-<body class="dark"> <header>
-        <div class="header-content">
-            <img src="majdoul.png" alt="Majdoul Logo" class="logo-majdoul">
-            
-            <div class="nav-icons">
-                <i class="fas fa-desktop icon-btn" title="تبديل الوضع" onclick="toggleDisplayMode()" id="modeIcon"></i>
-                <i class="fas fa-adjust icon-btn" onclick="toggleTheme()" title="الوضع الليلي"></i>
-                <i class="fas fa-chart-pie icon-btn" onclick="toggleView()" title="الإحصائيات"></i>
-            </div>
+<body>
 
-            <img src="linkexpert.png" alt="Link Expert Logo" class="logo-link">
-        </div>
+    <header>
+        <img src="majdoul.png" alt="Majdoul Logo" class="logo-majdoul">
+        <img src="linkexpert.png" alt="Link Expert Logo" class="logo-link">
     </header>
 
-    <main class="container">
+    <div class="container">
         
-        <div id="entryView" class="view-grid">
+        <section id="search-page" class="page-section active">
+            <h2>🔎 البحث عن مركبة</h2>
             <div class="glass-card">
-                <h2><i class="fas fa-search"></i> البحث الذكي</h2>
-                <input type="text" id="globalSearch" placeholder="بحث في كافة البيانات..." oninput="handleGlobalSearch()">
-                <div id="searchResults" class="search-results"></div>
+                <input type="text" id="searchInput" placeholder="ابحث بالاسم، اللوحة، أو الشركة..." oninput="doSearch()">
+                <div id="searchList"></div>
             </div>
+        </section>
 
+        <section id="inventory-page" class="page-section">
+            <h2>📝 تسجيل الدخول</h2>
             <div class="glass-card">
-                <h2><i class="fas fa-check-circle"></i> تسجيل الموقف</h2>
-                <label style="font-size: 11px;">المركبة المختارة</label>
-                <input type="text" id="targetPlate" readonly placeholder="اختر سيارة من البحث">
+                <label>المركبة المختارة</label>
+                <input type="text" id="selectedCarDisplay" readonly placeholder="يرجى اختيار سيارة من صفحة البحث">
                 
-                <div style="display: flex; gap: 10px;">
-                    <div style="flex: 2;">
-                        <label style="font-size: 11px;">الوحدة (Unit)</label>
-                        <select id="unitSelect">
-                            <option value="P1">P1</option>
-                            <option value="P1-VIP">P1 - VIP</option>
-                            <option value="P2">P2</option>
-                            <option value="P3">P3</option>
-                            <option value="P4">P4</option>
-                            <option value="Landscape">Landscape</option>
-                        </select>
-                    </div>
-                    <div style="flex: 1;">
-                        <label style="font-size: 11px;">رقم الموقف</label>
-                        <input type="number" id="slotNumber" placeholder="000">
-                    </div>
-                </div>
-                <button class="btn-primary" onclick="submitEntry()">إرسال البيانات</button>
-            </div>
-        </div>
+                <label>الوحدة (Unit)</label>
+                <select id="unitInput">
+                    <option value="P1">P1</option>
+                    <option value="P1-VIP">P1 - VIP</option>
+                    <option value="P2">P2</option>
+                    <option value="P3">P3</option>
+                    <option value="P4">P4</option>
+                    <option value="Landscape">Landscape</option>
+                </select>
 
-        <div id="statsView" style="display:none;" class="view-grid">
-            <div id="exportArea" style="width: 100%; display: flex; flex-direction: column; gap: 20px;">
+                <label>رقم الموقف (Slot)</label>
+                <input type="number" id="slotInput" placeholder="مثال: 105">
+
+                <button class="btn-primary" onclick="saveEntry()">تأكيد التسجيل</button>
+            </div>
+        </section>
+
+        <section id="result-page" class="page-section">
+            <h2>📊 التقرير اليومي</h2>
+            <div id="exportArea">
                 <div class="glass-card">
-                    <h2>إحصائيات دخول الشركات اليوم</h2>
-                    <canvas id="companyChart" style="max-height: 300px;"></canvas>
+                    <h3>توزيع المواقف</h3>
+                    <div id="parkingList">
+                        </div>
                 </div>
 
                 <div class="glass-card">
-                    <h2>توزيع الأدوار</h2>
-                    <div id="parkingStats" class="stats-grid"></div>
+                    <h3>إحصائيات الشركات</h3>
+                    <canvas id="companyChart"></canvas>
                 </div>
             </div>
-            <button class="btn-primary" style="background: #34c759;" onclick="exportReport()">
-                <i class="fas fa-file-image"></i> حفظ التقرير كصورة
+            <button class="btn-primary" style="background: #34c759;" onclick="downloadImage()">
+                <i class="fas fa-image"></i> حفظ كصورة
             </button>
+        </section>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="showPage('search-page', this)">
+            <i class="fas fa-search"></i>
+            <span>البحث</span>
         </div>
-
-    </main>
-
-    <footer>
-        المشغل: <b>Link Expert - خبير الربط</b>
-    </footer>
+        <div class="nav-item" onclick="showPage('inventory-page', this)">
+            <i class="fas fa-plus-circle"></i>
+            <span>التسجيل</span>
+        </div>
+        <div class="nav-item" onclick="showPage('result-page', this)">
+            <i class="fas fa-chart-bar"></i>
+            <span>النتائج</span>
+        </div>
+    </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        let carsData = [];
-        let dailyEntries = [];
-        let chartInstance = null;
+        let rawData = [];
+        let dailyLogs = [];
+        let selectedCar = null;
+        let chartObj = null;
 
-        // Fetch Data
-        async function loadCSV() {
+        // Navigation Control
+        function showPage(pageId, navEl) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            navEl.classList.add('active');
+
+            if(pageId === 'result-page') renderStats();
+        }
+
+        // CSV Loader
+        async function init() {
             try {
                 const res = await fetch('data.csv');
                 const text = await res.text();
                 const rows = text.split('\n').filter(r => r.trim() !== '');
-                carsData = rows.slice(1).map(row => {
-                    const c = row.split(',').map(field => field.trim());
+                rawData = rows.slice(1).map(r => {
+                    const c = r.split(',').map(f => f.trim());
                     return { client: c[0], plate: c[1], model: c[2], color: c[3], employee: c[4], status: c[5] };
                 });
-            } catch (e) { console.error("CSV error"); }
+            } catch (e) { console.error("CSV Error"); }
         }
 
-        // Search across all properties
-        function handleGlobalSearch() {
-            const query = document.getElementById('globalSearch').value.toLowerCase();
-            const box = document.getElementById('searchResults');
-            box.innerHTML = '';
+        // Search Logic
+        function doSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const list = document.getElementById('searchList');
+            list.innerHTML = '';
             if (query.length < 2) return;
 
-            const matches = carsData.filter(c => 
-                Object.values(c).some(val => String(val).toLowerCase().includes(query))
-            ).slice(0, 8);
+            const filtered = rawData.filter(c => 
+                Object.values(c).some(v => String(v).toLowerCase().includes(query))
+            ).slice(0, 10);
 
-            matches.forEach(car => {
+            filtered.forEach(car => {
                 const d = document.createElement('div');
                 d.className = 'result-item';
-                d.innerHTML = `<strong>${car.plate}</strong> | ${car.client} <br> <small>${car.employee} (${car.color})</small>`;
+                d.innerHTML = `<strong>${car.plate}</strong> | ${car.client}<br><small>${car.employee} (${car.color})</small>`;
                 d.onclick = () => {
-                    document.getElementById('targetPlate').value = car.plate;
-                    document.getElementById('targetPlate').dataset.client = car.client;
-                    box.innerHTML = '';
+                    selectedCar = car;
+                    document.getElementById('selectedCarDisplay').value = `${car.plate} - ${car.client}`;
+                    alert("تم اختيار المركبة، انتقل لصفحة التسجيل");
+                    showPage('inventory-page', document.querySelectorAll('.nav-item')[1]);
                 };
-                box.appendChild(d);
+                list.appendChild(d);
             });
         }
 
-        function submitEntry() {
-            const plate = document.getElementById('targetPlate').value;
-            const client = document.getElementById('targetPlate').dataset.client;
-            const unit = document.getElementById('unitSelect').value;
-            const slot = document.getElementById('slotNumber').value;
+        // Save entry
+        function saveEntry() {
+            const unit = document.getElementById('unitInput').value;
+            const slot = document.getElementById('slotInput').value;
+            if (!selectedCar || !slot) return alert("يرجى اختيار مركبة وإدخال رقم الموقف");
 
-            if (!plate || !slot) return alert("يرجى اختيار سيارة ورقم موقف");
-
-            dailyEntries.push({ plate, client, unit, slot });
-            alert("تم التسجيل");
-            document.getElementById('targetPlate').value = '';
-            document.getElementById('slotNumber').value = '';
+            dailyLogs.push({ ...selectedCar, unit, slot });
+            alert("تم التسجيل بنجاح");
+            
+            // Reset
+            selectedCar = null;
+            document.getElementById('selectedCarDisplay').value = '';
+            document.getElementById('slotInput').value = '';
         }
 
-        function updateStats() {
+        // Results Rendering
+        function renderStats() {
+            // Update Parking List (P1 - 0 format)
+            const units = ['P1', 'P1-VIP', 'P2', 'P3', 'P4', 'Landscape'];
             const counts = {};
-            dailyEntries.forEach(e => counts[e.client] = (counts[e.client] || 0) + 1);
+            dailyLogs.forEach(l => counts[l.unit] = (counts[l.unit] || 0) + 1);
+            
+            const listEl = document.getElementById('parkingList');
+            listEl.innerHTML = units.map(u => `
+                <div class="stat-line">${u} <span>- ${counts[u] || 0}</span></div>
+            `).join('');
 
+            // Chart
+            const compCounts = {};
+            dailyLogs.forEach(l => compCounts[l.client] = (compCounts[l.client] || 0) + 1);
+            
             const ctx = document.getElementById('companyChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, {
+            if (chartObj) chartObj.destroy();
+            chartObj = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(counts),
-                    datasets: [{ label: 'السيارات', data: Object.values(counts), backgroundColor: '#0a84ff', borderRadius: 8 }]
+                    labels: Object.keys(compCounts),
+                    datasets: [{ label: 'المركبات', data: Object.values(compCounts), backgroundColor: '#0a84ff' }]
                 },
-                options: { plugins: { legend: { display: false } } }
+                options: { color: '#fff' }
             });
-
-            const unitCounts = {};
-            dailyEntries.forEach(e => unitCounts[e.unit] = (unitCounts[e.unit] || 0) + 1);
-            const units = ['P1', 'P1-VIP', 'P2', 'P3', 'P4', 'Landscape'];
-            document.getElementById('parkingStats').innerHTML = units.map(u => `
-                <div class="stat-box"><small>${u}</small><span>${unitCounts[u] || 0}</span></div>
-            `).join('');
         }
 
-        function toggleDisplayMode() {
-            document.body.classList.toggle('desktop-mode');
-            const icon = document.getElementById('modeIcon');
-            icon.className = document.body.classList.contains('desktop-mode') ? 'fas fa-mobile-alt icon-btn' : 'fas fa-desktop icon-btn';
-        }
-
-        function toggleTheme() { document.body.classList.toggle('dark'); }
-        
-        function toggleView() {
-            const ev = document.getElementById('entryView');
-            const sv = document.getElementById('statsView');
-            const isStats = ev.style.display === 'none';
-            ev.style.display = isStats ? 'flex' : 'none';
-            sv.style.display = isStats ? 'none' : 'flex';
-            if (!isStats) updateStats();
-        }
-
-        function exportReport() {
-            html2canvas(document.getElementById('exportArea'), {
-                backgroundColor: document.body.classList.contains('dark') ? '#000000' : '#f2f2f7'
-            }).then(canvas => {
+        function downloadImage() {
+            html2canvas(document.getElementById('exportArea'), { backgroundColor: '#000' }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'Mjdoul_Report.png';
+                link.download = 'report.png';
                 link.href = canvas.toDataURL();
                 link.click();
             });
         }
 
-        loadCSV();
+        init();
     </script>
 </body>
 </html>
