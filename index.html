@@ -10,7 +10,7 @@
     <style>
         :root {
             --bg-color: #f2f2f7;
-            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.85);
             --text-color: #1c1c1e;
             --accent: #007aff;
             --glass-border: rgba(0, 0, 0, 0.1);
@@ -40,7 +40,6 @@
             padding-bottom: 100px;
         }
 
-        /* Header */
         header {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -56,48 +55,42 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        .logo-majdoul { height: 40px; }
-        .logo-link { height: 30px; }
+        .logo-majdoul { height: 40px; width: auto; object-fit: contain; }
+        .logo-link { height: 30px; width: auto; object-fit: contain; }
 
         .top-actions { display: flex; gap: 12px; }
         .icon-btn {
             font-size: 18px; color: var(--accent); cursor: pointer;
             padding: 10px; border-radius: 50%; background: var(--input-bg);
-            transition: 0.2s;
         }
 
-        /* Container & Pages */
-        .container {
-            max-width: var(--container-width);
-            margin: 0 auto; padding: 20px;
-        }
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 20px; }
 
         .page-section { display: none; animation: slideUp 0.3s ease-out; }
         .page-section.active { display: block; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Search Cards */
+        #cardsResult { margin-top: 20px; }
         .car-card {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 18px;
+            padding: 20px;
             margin-bottom: 15px;
-            border-right: 6px solid #ccc;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-right: 8px solid #ccc;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        .car-card:active { transform: scale(0.98); }
         .car-card.active-status { border-right-color: var(--status-active); }
         .car-card.inactive-status { border-right-color: var(--status-inactive); }
 
-        .car-card h3 { margin: 0 0 8px 0; font-size: 18px; color: var(--accent); }
-        .car-card p { margin: 4px 0; font-size: 14px; opacity: 0.8; }
+        .car-card h3 { margin: 0 0 10px 0; font-size: 20px; color: var(--accent); }
+        .car-card p { margin: 5px 0; font-size: 15px; opacity: 0.9; }
         
         .status-badge {
-            display: inline-block; padding: 4px 12px; border-radius: 50px;
-            font-size: 12px; font-weight: bold; margin-top: 10px;
+            display: inline-block; padding: 5px 15px; border-radius: 50px;
+            font-size: 13px; font-weight: bold; margin-top: 10px;
         }
         .active-badge { background: rgba(52, 199, 89, 0.2); color: var(--status-active); }
         .inactive-badge { background: rgba(255, 59, 48, 0.2); color: var(--status-inactive); }
@@ -111,18 +104,22 @@
             padding: 25px;
         }
 
+        .search-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; opacity: 0.7; }
+
         input, select {
             width: 100%; padding: 15px; border-radius: 12px; border: none;
             background: var(--input-bg); color: var(--text-color);
             font-size: 16px; margin-bottom: 15px; box-sizing: border-box;
+            outline: none; border: 1px solid transparent;
         }
+        input:focus { border-color: var(--accent); }
 
         .submit-btn {
             width: 100%; padding: 16px; background: var(--accent); color: white;
             border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer;
         }
 
-        /* Results List */
         .stat-row {
             display: flex; justify-content: space-between; padding: 15px 0;
             border-bottom: 0.5px solid var(--glass-border); font-size: 18px;
@@ -147,12 +144,10 @@
     <header>
         <div class="header-content">
             <img src="majdoul.png" alt="Majdoul" class="logo-majdoul">
-            
             <div class="top-actions">
-                <i class="fas fa-desktop icon-btn" onclick="toggleDesktop()" title="Desktop Mode"></i>
-                <i class="fas fa-moon icon-btn" onclick="toggleDarkMode()" title="Dark Mode"></i>
+                <i class="fas fa-desktop icon-btn" onclick="toggleDesktop()"></i>
+                <i class="fas fa-adjust icon-btn" onclick="toggleDarkMode()"></i>
             </div>
-
             <img src="linkexpert.png" alt="Link Expert" class="logo-link">
         </div>
     </header>
@@ -160,7 +155,16 @@
     <div class="container">
         
         <section id="page-search" class="page-section active">
-            <input type="text" id="mainSearch" placeholder="🔎 ابحث باللوحة، الاسم، الموديل..." oninput="runGlobalSearch()">
+            <div class="glass-panel search-group">
+                <label>البحث بواسطة اللوحة</label>
+                <input type="text" id="plateSearch" placeholder="أدخل رقم اللوحة فقط..." oninput="searchByPlate()">
+                
+                <hr style="opacity: 0.1; margin: 20px 0;">
+                
+                <label>البحث بواسطة (الاسم، اللون، أو الموديل)</label>
+                <input type="text" id="infoSearch" placeholder="أدخل الاسم أو الموديل..." oninput="searchByInfo()">
+            </div>
+            
             <div id="cardsResult"></div>
         </section>
 
@@ -193,7 +197,6 @@
                     <h3 style="margin-top:0">🅿️ حالة الأدوار اليوم</h3>
                     <div id="unitCounts"></div>
                 </div>
-
                 <div class="glass-panel">
                     <h3>🏢 إحصائيات الشركات</h3>
                     <canvas id="chartComp"></canvas>
@@ -227,7 +230,6 @@
         let activeCar = null;
         let myChart = null;
 
-        // Load CSV Data
         async function loadData() {
             try {
                 const res = await fetch('data.csv');
@@ -235,23 +237,39 @@
                 const rows = text.split('\n').filter(r => r.trim() !== '');
                 db = rows.slice(1).map(r => {
                     const c = r.split(',').map(f => f.trim());
-                    return { client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] };
+                    return { client: c[0]||'', plate: c[1]||'', model: c[2]||'', color: c[3]||'', emp: c[4]||'', status: c[5]||'' };
                 });
-            } catch(e) { console.error("CSV Load Error"); }
+            } catch(e) { console.error("CSV Error"); }
         }
 
-        // Search Logic with Cards
-        function runGlobalSearch() {
-            const q = document.getElementById('mainSearch').value.toLowerCase();
+        // 1. البحث برقم اللوحة فقط
+        function searchByPlate() {
+            document.getElementById('infoSearch').value = ''; // تفريغ الحقل الآخر
+            const q = document.getElementById('plateSearch').value.toLowerCase();
+            renderCards(db.filter(i => i.plate.toLowerCase().includes(q)));
+        }
+
+        // 2. البحث بالمعلومات الأخرى
+        function searchByInfo() {
+            document.getElementById('plateSearch').value = ''; // تفريغ الحقل الآخر
+            const q = document.getElementById('infoSearch').value.toLowerCase();
+            renderCards(db.filter(i => 
+                i.emp.toLowerCase().includes(q) || 
+                i.model.toLowerCase().includes(q) || 
+                i.color.toLowerCase().includes(q) ||
+                i.client.toLowerCase().includes(q)
+            ));
+        }
+
+        function renderCards(filtered) {
             const container = document.getElementById('cardsResult');
             container.innerHTML = '';
-            if(q.length < 2) return;
+            
+            const queryPlate = document.getElementById('plateSearch').value;
+            const queryInfo = document.getElementById('infoSearch').value;
+            if(!queryPlate && !queryInfo) return;
 
-            const filtered = db.filter(item => 
-                Object.values(item).some(v => String(v).toLowerCase().includes(q))
-            ).slice(0, 15);
-
-            filtered.forEach(item => {
+            filtered.slice(0, 15).forEach(item => {
                 const isActive = item.status.toLowerCase().includes('active') || item.status.includes('نشط');
                 const card = document.createElement('div');
                 card.className = `car-card ${isActive ? 'active-status' : 'inactive-status'}`;
@@ -271,11 +289,10 @@
                     document.getElementById('selectedLabel').value = `${item.plate} - ${item.client}`;
                     switchPage('page-inventory', document.querySelectorAll('.nav-tab')[1]);
                 };
-                container.appendChild(car);
+                container.appendChild(card);
             });
         }
 
-        // Navigation
         function switchPage(pageId, el) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
@@ -296,16 +313,11 @@
         }
 
         function renderStats() {
-            // Unit Counts P1 - 0
             const units = ['P1', 'P1-VIP', 'P2', 'P3', 'P4', 'Landscape'];
             const uCounts = {};
             logs.forEach(l => uCounts[l.unit] = (uCounts[l.unit] || 0) + 1);
-            
-            document.getElementById('unitCounts').innerHTML = units.map(u => `
-                <div class="stat-row">${u} <b>- ${uCounts[u] || 0}</b></div>
-            `).join('');
+            document.getElementById('unitCounts').innerHTML = units.map(u => `<div class="stat-row">${u} <b>- ${uCounts[u] || 0}</b></div>`).join('');
 
-            // Chart
             const cCounts = {};
             logs.forEach(l => cCounts[l.client] = (cCounts[l.client] || 0) + 1);
             const ctx = document.getElementById('chartComp').getContext('2d');
@@ -314,7 +326,7 @@
                 type: 'bar',
                 data: {
                     labels: Object.keys(cCounts),
-                    datasets: [{ label: 'المركبات', data: Object.values(cCounts), backgroundColor: '#0a84ff', borderRadius: 10 }]
+                    datasets: [{ label: 'المركبات', data: Object.values(cCounts), backgroundColor: '#0a84ff', borderRadius: 8 }]
                 },
                 options: { color: document.body.classList.contains('dark') ? '#fff' : '#000' }
             });
@@ -326,7 +338,7 @@
         function saveAsImg() {
             html2canvas(document.getElementById('captureArea'), { backgroundColor: document.body.classList.contains('dark') ? '#000' : '#f2f2f7' }).then(canvas => {
                 const a = document.createElement('a');
-                a.download = 'Mjdoul-Daily-Report.png';
+                a.download = 'Report.png';
                 a.href = canvas.toDataURL();
                 a.click();
             });
