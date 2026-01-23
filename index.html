@@ -3,269 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مواقف برج مجدول</title>
+    <title>مواقف برج مجدول - iOS 18</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* CSS - iOS 18 Liquid Glass System */
         :root {
             --bg-color: #f2f2f7;
-            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.75);
             --text-color: #000000;
             --accent: #007aff;
-            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-border: rgba(0, 0, 0, 0.1);
             --input-bg: rgba(120, 120, 128, 0.12);
         }
 
         body.dark {
-            --bg-color: #000000; /* True OLED Black */
-            --card-bg: rgba(28, 28, 30, 0.75); /* iOS System Material */
+            --bg-color: #000000;
+            --card-bg: rgba(28, 28, 30, 0.8);
             --text-color: #ffffff;
             --accent: #0a84ff;
             --glass-border: rgba(255, 255, 255, 0.15);
-            --input-bg: rgba(120, 120, 128, 0.24);
+            --input-bg: rgba(120, 120, 128, 0.25);
         }
 
         body {
             margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s ease;
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
         }
 
-        /* Liquid Background Blobs */
         .liquid-bg {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             z-index: -1;
-            overflow: hidden;
-        }
-        .blob {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: linear-gradient(135deg, var(--accent) 0%, #5856d6 100%);
-            filter: blur(80px);
-            border-radius: 50%;
-            opacity: 0.15;
-            animation: move 20s infinite alternate;
-        }
-        @keyframes move {
-            from { transform: translate(-10%, -10%); }
-            to { transform: translate(20%, 20%); }
+            background: radial-gradient(circle at 10% 20%, rgba(0, 122, 255, 0.1), transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(88, 86, 214, 0.1), transparent 40%);
         }
 
-        /* Header */
+        .page { width: 100%; max-width: 480px; }
+
         header {
             background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-bottom: 0.5px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            border-bottom: 0.5px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .header-content {
-            max-width: 500px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header-logos img { height: 32px; border-radius: 6px; }
-        .nav-icons { display: flex; gap: 20px; align-items: center; }
-        .icon-btn { font-size: 20px; color: var(--accent); cursor: pointer; transition: 0.2s; }
 
-        /* Container & Cards */
-        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
-        
+        .header-logos img { height: 35px; border-radius: 8px; }
+        .nav-icons { display: flex; gap: 18px; }
+        .icon-btn { font-size: 20px; color: var(--accent); cursor: pointer; }
+
+        .container { padding: 15px; }
+
         .glass-card {
             background: var(--card-bg);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             border: 0.5px solid var(--glass-border);
-            border-radius: 20px;
+            border-radius: 22px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Form Elements */
-        h2 { font-size: 20px; margin-top: 0; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; opacity: 0.8; }
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            background: var(--input-bg);
-            color: var(--text-color);
-            font-size: 16px;
             margin-bottom: 15px;
-            box-sizing: border-box;
-            outline: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
         }
-        
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
+
+        h2 { font-size: 18px; margin: 0 0 15px 0; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+        input, select {
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            background: var(--input-bg); color: var(--text-color);
+            font-size: 16px; margin-bottom: 12px; box-sizing: border-box; outline: none;
+        }
+
+        .search-results {
+            max-height: 250px; overflow-y: auto; margin-top: -5px; border-radius: 12px;
+        }
+
+        .result-item {
+            padding: 12px; border-bottom: 0.5px solid var(--glass-border); cursor: pointer;
             transition: 0.2s;
         }
-        .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
-
-        /* Search Results Styles */
-        .result-item {
-            padding: 12px;
-            border-bottom: 0.5px solid var(--glass-border);
-            cursor: pointer;
-        }
-        .result-item:last-child { border: none; }
         .result-item:active { background: var(--input-bg); }
+        .result-item div { font-size: 13px; opacity: 0.7; }
+        .result-item strong { color: var(--accent); font-size: 15px; }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
+        .btn-primary {
+            width: 100%; padding: 16px; background: var(--accent); color: white;
+            border: none; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer;
         }
-        .stat-box {
-            background: var(--input-bg);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-        }
-        .stat-box span { font-size: 24px; font-weight: bold; color: var(--accent); }
 
-        footer { text-align: center; padding: 20px; font-size: 12px; opacity: 0.6; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .stat-box { background: var(--input-bg); padding: 12px; border-radius: 15px; text-align: center; }
+        .stat-box small { font-size: 10px; display: block; margin-bottom: 4px; }
+        .stat-box span { font-size: 18px; font-weight: bold; }
+
+        footer { text-align: center; padding: 30px; font-size: 12px; opacity: 0.5; }
     </style>
 </head>
-<body class="dark"> <div class="liquid-bg"><div class="blob"></div></div>
+<body class="dark">
 
-    <header>
-        <div class="header-content">
-            <img src="Majdoul.png" alt="Majdoul" onerror="this.style.display='none'">
+    <div class="liquid-bg"></div>
+
+    <div class="page">
+        <header>
+            <img src="Majdoul.png" alt="Tower" onerror="this.style.visibility='hidden'">
             <div class="nav-icons">
-                <i class="fas fa-moon icon-btn" id="themeBtn" onclick="toggleTheme()"></i>
-                <i class="fas fa-chart-line icon-btn" onclick="toggleView()"></i>
+                <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
+                <i class="fas fa-chart-pie icon-btn" onclick="toggleView()"></i>
             </div>
-            <img src="linkexpert.png" alt="Link Expert" onerror="this.style.display='none'">
-        </div>
-    </header>
+            <img src="linkexpert.png" alt="LinkExpert" onerror="this.style.visibility='hidden'">
+        </header>
 
-    <main class="container">
-        
-        <div id="entryView">
-            <div class="glass-card">
-                <h2>🔎 البحث والتحقق</h2>
-                <input type="text" id="plateSearch" placeholder="أدخل رقم اللوحة (مثال: 1234)..." oninput="handleSearch()">
-                <div id="searchResults"></div>
-            </div>
-
-            <div class="glass-card">
-                <h2>📝 تسجيل الدخول</h2>
-                <label>اللوحة المختارة</label>
-                <input type="text" id="targetPlate" readonly placeholder="يرجى اختيار سيارة من البحث">
-                
-                <label>الوحدة (Unite)</label>
-                <select id="unitSelect">
-                    <option value="P1">P1</option>
-                    <option value="P1-VIP">P1 - VIP</option>
-                    <option value="P2">P2</option>
-                    <option value="P3">P3</option>
-                    <option value="P4">P4</option>
-                    <option value="Landscape">Landscape</option>
-                </select>
-
-                <label>رقم الموقف (Slot)</label>
-                <input type="number" id="slotNumber" placeholder="أدخل رقم الموقف">
-
-                <button class="btn-primary" onclick="submitEntry()">تسجيل المركبة</button>
-            </div>
-        </div>
-
-        <div id="statsView" style="display:none;">
-            <div id="exportArea">
-                <div class="glass-card">
-                    <h2>📊 إحصائيات اليوم</h2>
-                    <canvas id="companyChart" style="max-height: 250px;"></canvas>
-                </div>
-
-                <div class="glass-card">
-                    <h2>🅿️ توزيع المواقف</h2>
-                    <div id="parkingStats" class="stats-grid">
-                        </div>
-                </div>
-            </div>
+        <main class="container">
             
-            <button class="btn-primary" style="background: #34c759;" onclick="exportReport()">
-                <i class="fas fa-camera"></i> حفظ كصورة
-            </button>
-        </div>
+            <div id="entryView">
+                <div class="glass-card">
+                    <h2><i class="fas fa-search"></i> نظام البحث الذكي</h2>
+                    <input type="text" id="globalSearch" placeholder="بحث (لوحة، موظف، شركة، لون...)" oninput="handleGlobalSearch()">
+                    <div id="searchResults" class="search-results"></div>
+                </div>
 
-    </main>
+                <div class="glass-card">
+                    <h2><i class="fas fa-car"></i> تفاصيل الموقف</h2>
+                    <label style="font-size: 12px; opacity: 0.6;">المركبة المختارة</label>
+                    <input type="text" id="targetPlate" readonly placeholder="اختر من نتائج البحث">
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 2;">
+                            <label style="font-size: 12px; opacity: 0.6;">الوحدة (Unite)</label>
+                            <select id="unitSelect">
+                                <option value="P1">P1</option>
+                                <option value="P1-VIP">P1 - VIP</option>
+                                <option value="P2">P2</option>
+                                <option value="P3">P3</option>
+                                <option value="P4">P4</option>
+                                <option value="Landscape">Landscape</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 12px; opacity: 0.6;">رقم الموقف</label>
+                            <input type="number" id="slotNumber" placeholder="Slot">
+                        </div>
+                    </div>
 
-    <footer>
-        المشغل: <b>Link Expert - خبير الربط</b>
-    </footer>
+                    <button class="btn-primary" onclick="submitEntry()">تسجيل الدخول</button>
+                </div>
+            </div>
+
+            <div id="statsView" style="display:none;">
+                <div id="exportArea">
+                    <div class="glass-card">
+                        <h2>إحصائيات الشركات اليوم</h2>
+                        <canvas id="companyChart" style="max-height: 220px;"></canvas>
+                    </div>
+
+                    <div class="glass-card">
+                        <h2>توزيع مواقف الأدوار</h2>
+                        <div id="parkingStats" class="stats-grid"></div>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" style="background: #34c759;" onclick="exportReport()">
+                    <i class="fas fa-download"></i> تصدير التقرير كصورة
+                </button>
+            </div>
+
+        </main>
+
+        <footer>
+            الموقع: برج مجدول <br>
+            بواسطة: <b>خبير الربط - Link Expert</b>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // Data Simulation (Replace with actual fetch logic)
         let carsData = [];
         let dailyEntries = [];
         let chartInstance = null;
 
-        // Load CSV (Mocking the fetch for this example)
+        // Load data.csv and parse all 6 columns
         async function loadCSV() {
-            // Replace 'data.csv' with your actual file path
             try {
                 const response = await fetch('data.csv');
                 const text = await response.text();
-                const rows = text.split('\n').slice(1);
-                carsData = rows.map(row => {
-                    const cols = row.split(',');
+                const rows = text.split('\n').filter(row => row.trim() !== '');
+                
+                // Assumes Header order: Client, Plate, Model, Color, Employee Name, Status
+                carsData = rows.slice(1).map(row => {
+                    const cols = row.split(',').map(c => c.trim());
                     return {
-                        client: cols[0]?.trim(),
-                        plate: cols[1]?.trim(),
-                        employee: cols[4]?.trim()
+                        client: cols[0] || '',
+                        plate: cols[1] || '',
+                        model: cols[2] || '',
+                        color: cols[3] || '',
+                        employee: cols[4] || '',
+                        status: cols[5] || ''
                     };
-                }).filter(c => c.plate);
+                });
+                console.log("Data loaded: " + carsData.length + " cars.");
             } catch (e) {
-                console.log("CSV load skipped or file not found.");
+                console.error("CSV loading failed. Check if data.csv exists.");
             }
         }
 
-        function handleSearch() {
-            const query = document.getElementById('plateSearch').value.toUpperCase();
+        // Global Search Functionality (Searches all columns)
+        function handleGlobalSearch() {
+            const query = document.getElementById('globalSearch').value.toLowerCase();
             const resultsBox = document.getElementById('searchResults');
             resultsBox.innerHTML = '';
 
             if (query.length < 2) return;
 
-            const matches = carsData.filter(c => c.plate.includes(query)).slice(0, 4);
+            // Search across all fields
+            const matches = carsData.filter(c => 
+                c.plate.toLowerCase().includes(query) ||
+                c.employee.toLowerCase().includes(query) ||
+                c.client.toLowerCase().includes(query) ||
+                c.model.toLowerCase().includes(query) ||
+                c.color.toLowerCase().includes(query) ||
+                c.status.toLowerCase().includes(query)
+            ).slice(0, 10);
+
             matches.forEach(car => {
                 const div = document.createElement('div');
                 div.className = 'result-item';
-                div.innerHTML = `<strong>${car.plate}</strong> - ${car.client} <br> <small>${car.employee}</small>`;
+                div.innerHTML = `
+                    <strong>${car.plate}</strong> | ${car.client}
+                    <div>${car.employee} - ${car.model} (${car.color})</div>
+                    <div style="color: ${car.status.includes('Active') || car.status.includes('نشط') ? '#34c759' : '#ff3b30'}">
+                        ● ${car.status}
+                    </div>
+                `;
                 div.onclick = () => selectCar(car);
                 resultsBox.appendChild(div);
             });
@@ -275,7 +253,7 @@
             document.getElementById('targetPlate').value = car.plate;
             document.getElementById('targetPlate').dataset.client = car.client;
             document.getElementById('searchResults').innerHTML = '';
-            document.getElementById('plateSearch').value = '';
+            document.getElementById('globalSearch').value = '';
         }
 
         function submitEntry() {
@@ -285,21 +263,19 @@
             const slot = document.getElementById('slotNumber').value;
 
             if (!plate || !slot) {
-                alert("يرجى اختيار سيارة وتحديد رقم الموقف");
+                alert("الرجاء اختيار مركبة وإدخال رقم الموقف");
                 return;
             }
 
-            dailyEntries.push({ plate, client, unit, slot, time: new Date() });
-            alert(`تم تسجيل ${plate} في ${unit}`);
+            dailyEntries.push({ plate, client, unit, slot });
+            alert(`تم تسجيل الدخول: ${plate}`);
             
-            // Clear fields
             document.getElementById('targetPlate').value = '';
             document.getElementById('slotNumber').value = '';
             updateStats();
         }
 
         function updateStats() {
-            // Update Company Chart
             const companyCounts = {};
             dailyEntries.forEach(e => companyCounts[e.client] = (companyCounts[e.client] || 0) + 1);
 
@@ -311,20 +287,21 @@
                 data: {
                     labels: Object.keys(companyCounts),
                     datasets: [{
-                        label: 'عدد السيارات',
+                        label: 'عدد المركبات',
                         data: Object.values(companyCounts),
                         backgroundColor: '#0a84ff',
-                        borderRadius: 8
+                        borderRadius: 10
                     }]
                 },
                 options: {
-                    responsive: true,
                     plugins: { legend: { display: false } },
-                    scales: { y: { ticks: { color: '#888' }, grid: { display: false } } }
+                    scales: { 
+                        x: { ticks: { color: '#888' } },
+                        y: { ticks: { color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } }
+                    }
                 }
             });
 
-            // Update Unit Stats
             const unitStats = document.getElementById('parkingStats');
             const unitCounts = {};
             dailyEntries.forEach(e => unitCounts[e.unit] = (unitCounts[e.unit] || 0) + 1);
@@ -332,7 +309,7 @@
             const units = ['P1', 'P1-VIP', 'P2', 'P3', 'P4', 'Landscape'];
             unitStats.innerHTML = units.map(u => `
                 <div class="stat-box">
-                    <small>${u}</small><br>
+                    <small>${u}</small>
                     <span>${unitCounts[u] || 0}</span>
                 </div>
             `).join('');
@@ -340,8 +317,6 @@
 
         function toggleTheme() {
             document.body.classList.toggle('dark');
-            const isDark = document.body.classList.contains('dark');
-            document.getElementById('themeBtn').className = isDark ? 'fas fa-sun icon-btn' : 'fas fa-moon icon-btn';
         }
 
         function toggleView() {
@@ -359,15 +334,17 @@
 
         function exportReport() {
             const area = document.getElementById('exportArea');
-            html2canvas(area, { backgroundColor: null }).then(canvas => {
+            html2canvas(area, { 
+                backgroundColor: document.body.classList.contains('dark') ? '#000000' : '#f2f2f7',
+                scale: 2 
+            }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'Mjdoul-Report.png';
+                link.download = `Majdoul_Report_${new Date().toLocaleDateString()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
         }
 
-        // Initialize
         loadCSV();
     </script>
 </body>
