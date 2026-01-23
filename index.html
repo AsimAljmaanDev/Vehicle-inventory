@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        /* CSS Variables */
         :root {
             --bg-color: #f2f2f7;
             --card-bg: rgba(255, 255, 255, 0.75);
@@ -15,173 +16,212 @@
             --accent: #007aff;
             --glass-border: rgba(0, 0, 0, 0.1);
             --input-bg: rgba(120, 120, 128, 0.12);
+            --content-width: 480px; /* Default Mobile */
         }
 
         body.dark {
             --bg-color: #000000;
-            --card-bg: rgba(28, 28, 30, 0.8);
+            --card-bg: rgba(28, 28, 30, 0.85);
             --text-color: #ffffff;
             --accent: #0a84ff;
             --glass-border: rgba(255, 255, 255, 0.15);
             --input-bg: rgba(120, 120, 128, 0.25);
         }
 
+        /* Desktop Mode Override */
+        body.desktop-mode {
+            --content-width: 1100px;
+        }
+
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
         }
 
-        .liquid-bg {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -1;
-            background: radial-gradient(circle at 10% 20%, rgba(0, 122, 255, 0.1), transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(88, 86, 214, 0.1), transparent 40%);
+        /* Fixed Logo Sizes */
+        .logo-majdoul {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
         }
 
-        .page { width: 100%; max-width: 480px; }
+        .logo-link {
+            height: 35px;
+            width: auto;
+            object-fit: contain;
+        }
 
+        /* Header */
         header {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 15px 20px;
+            padding: 10px 20px;
             border-bottom: 0.5px solid var(--glass-border);
-            position: sticky; top: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .header-logos img { height: 35px; border-radius: 8px; }
-        .nav-icons { display: flex; gap: 18px; }
-        .icon-btn { font-size: 20px; color: var(--accent); cursor: pointer; }
+        .header-content {
+            max-width: var(--content-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .container { padding: 15px; }
+        .nav-icons { display: flex; gap: 15px; align-items: center; }
+        .icon-btn { 
+            font-size: 18px; 
+            color: var(--accent); 
+            cursor: pointer; 
+            padding: 8px;
+            border-radius: 50%;
+            background: var(--input-bg);
+        }
 
+        /* Main Layout */
+        .container {
+            max-width: var(--content-width);
+            margin: 0 auto;
+            padding: 20px;
+            transition: max-width 0.4s ease;
+        }
+
+        /* Desktop Grid Logic */
+        .view-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        body.desktop-mode .view-grid {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+
+        body.desktop-mode .glass-card {
+            flex: 1;
+        }
+
+        /* UI Elements */
         .glass-card {
             background: var(--card-bg);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             border: 0.5px solid var(--glass-border);
-            border-radius: 22px;
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
-        h2 { font-size: 18px; margin: 0 0 15px 0; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        h2 { font-size: 18px; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; }
 
         input, select {
-            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            width: 100%; padding: 12px; border-radius: 10px; border: none;
             background: var(--input-bg); color: var(--text-color);
-            font-size: 16px; margin-bottom: 12px; box-sizing: border-box; outline: none;
+            font-size: 16px; margin-bottom: 12px; box-sizing: border-box;
         }
 
         .search-results {
-            max-height: 250px; overflow-y: auto; margin-top: -5px; border-radius: 12px;
+            max-height: 200px; overflow-y: auto; border-radius: 10px; background: rgba(0,0,0,0.05);
         }
+
+        body.dark .search-results { background: rgba(255,255,255,0.05); }
 
         .result-item {
-            padding: 12px; border-bottom: 0.5px solid var(--glass-border); cursor: pointer;
-            transition: 0.2s;
+            padding: 10px; border-bottom: 0.5px solid var(--glass-border); cursor: pointer;
         }
-        .result-item:active { background: var(--input-bg); }
-        .result-item div { font-size: 13px; opacity: 0.7; }
-        .result-item strong { color: var(--accent); font-size: 15px; }
+        .result-item:hover { background: var(--accent); color: white; }
 
         .btn-primary {
-            width: 100%; padding: 16px; background: var(--accent); color: white;
-            border: none; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer;
+            width: 100%; padding: 15px; background: var(--accent); color: white;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;
         }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
-        .stat-box { background: var(--input-bg); padding: 12px; border-radius: 15px; text-align: center; }
-        .stat-box small { font-size: 10px; display: block; margin-bottom: 4px; }
-        .stat-box span { font-size: 18px; font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; }
+        .stat-box { background: var(--input-bg); padding: 10px; border-radius: 12px; text-align: center; }
 
-        footer { text-align: center; padding: 30px; font-size: 12px; opacity: 0.5; }
+        footer { text-align: center; padding: 40px; font-size: 12px; opacity: 0.6; }
+
     </style>
 </head>
-<body class="dark">
-
-    <div class="liquid-bg"></div>
-
-    <div class="page">
-        <header>
-            <img src="Majdoul.png" alt="Tower" onerror="this.style.visibility='hidden'">
-            <div class="nav-icons">
-                <i class="fas fa-adjust icon-btn" onclick="toggleTheme()"></i>
-                <i class="fas fa-chart-pie icon-btn" onclick="toggleView()"></i>
-            </div>
-            <img src="linkexpert.png" alt="LinkExpert" onerror="this.style.visibility='hidden'">
-        </header>
-
-        <main class="container">
+<body class="dark"> <header>
+        <div class="header-content">
+            <img src="majdoul.png" alt="Majdoul Logo" class="logo-majdoul">
             
-            <div id="entryView">
-                <div class="glass-card">
-                    <h2><i class="fas fa-search"></i> نظام البحث الذكي</h2>
-                    <input type="text" id="globalSearch" placeholder="بحث (لوحة، موظف، شركة، لون...)" oninput="handleGlobalSearch()">
-                    <div id="searchResults" class="search-results"></div>
-                </div>
-
-                <div class="glass-card">
-                    <h2><i class="fas fa-car"></i> تفاصيل الموقف</h2>
-                    <label style="font-size: 12px; opacity: 0.6;">المركبة المختارة</label>
-                    <input type="text" id="targetPlate" readonly placeholder="اختر من نتائج البحث">
-                    
-                    <div style="display: flex; gap: 10px;">
-                        <div style="flex: 2;">
-                            <label style="font-size: 12px; opacity: 0.6;">الوحدة (Unite)</label>
-                            <select id="unitSelect">
-                                <option value="P1">P1</option>
-                                <option value="P1-VIP">P1 - VIP</option>
-                                <option value="P2">P2</option>
-                                <option value="P3">P3</option>
-                                <option value="P4">P4</option>
-                                <option value="Landscape">Landscape</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label style="font-size: 12px; opacity: 0.6;">رقم الموقف</label>
-                            <input type="number" id="slotNumber" placeholder="Slot">
-                        </div>
-                    </div>
-
-                    <button class="btn-primary" onclick="submitEntry()">تسجيل الدخول</button>
-                </div>
+            <div class="nav-icons">
+                <i class="fas fa-desktop icon-btn" title="تبديل الوضع" onclick="toggleDisplayMode()" id="modeIcon"></i>
+                <i class="fas fa-adjust icon-btn" onclick="toggleTheme()" title="الوضع الليلي"></i>
+                <i class="fas fa-chart-pie icon-btn" onclick="toggleView()" title="الإحصائيات"></i>
             </div>
 
-            <div id="statsView" style="display:none;">
-                <div id="exportArea">
-                    <div class="glass-card">
-                        <h2>إحصائيات الشركات اليوم</h2>
-                        <canvas id="companyChart" style="max-height: 220px;"></canvas>
-                    </div>
+            <img src="linkexpert.png" alt="Link Expert Logo" class="logo-link">
+        </div>
+    </header>
 
-                    <div class="glass-card">
-                        <h2>توزيع مواقف الأدوار</h2>
-                        <div id="parkingStats" class="stats-grid"></div>
-                    </div>
-                </div>
+    <main class="container">
+        
+        <div id="entryView" class="view-grid">
+            <div class="glass-card">
+                <h2><i class="fas fa-search"></i> البحث الذكي</h2>
+                <input type="text" id="globalSearch" placeholder="بحث في كافة البيانات..." oninput="handleGlobalSearch()">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <div class="glass-card">
+                <h2><i class="fas fa-check-circle"></i> تسجيل الموقف</h2>
+                <label style="font-size: 11px;">المركبة المختارة</label>
+                <input type="text" id="targetPlate" readonly placeholder="اختر سيارة من البحث">
                 
-                <button class="btn-primary" style="background: #34c759;" onclick="exportReport()">
-                    <i class="fas fa-download"></i> تصدير التقرير كصورة
-                </button>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 2;">
+                        <label style="font-size: 11px;">الوحدة (Unit)</label>
+                        <select id="unitSelect">
+                            <option value="P1">P1</option>
+                            <option value="P1-VIP">P1 - VIP</option>
+                            <option value="P2">P2</option>
+                            <option value="P3">P3</option>
+                            <option value="P4">P4</option>
+                            <option value="Landscape">Landscape</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 11px;">رقم الموقف</label>
+                        <input type="number" id="slotNumber" placeholder="000">
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="submitEntry()">إرسال البيانات</button>
             </div>
+        </div>
 
-        </main>
+        <div id="statsView" style="display:none;" class="view-grid">
+            <div id="exportArea" style="width: 100%; display: flex; flex-direction: column; gap: 20px;">
+                <div class="glass-card">
+                    <h2>إحصائيات دخول الشركات اليوم</h2>
+                    <canvas id="companyChart" style="max-height: 300px;"></canvas>
+                </div>
 
-        <footer>
-            الموقع: برج مجدول <br>
-            بواسطة: <b>خبير الربط - Link Expert</b>
-        </footer>
-    </div>
+                <div class="glass-card">
+                    <h2>توزيع الأدوار</h2>
+                    <div id="parkingStats" class="stats-grid"></div>
+                </div>
+            </div>
+            <button class="btn-primary" style="background: #34c759;" onclick="exportReport()">
+                <i class="fas fa-file-image"></i> حفظ التقرير كصورة
+            </button>
+        </div>
+
+    </main>
+
+    <footer>
+        المشغل: <b>Link Expert - خبير الربط</b>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -191,69 +231,41 @@
         let dailyEntries = [];
         let chartInstance = null;
 
-        // Load data.csv and parse all 6 columns
+        // Fetch Data
         async function loadCSV() {
             try {
-                const response = await fetch('data.csv');
-                const text = await response.text();
-                const rows = text.split('\n').filter(row => row.trim() !== '');
-                
-                // Assumes Header order: Client, Plate, Model, Color, Employee Name, Status
+                const res = await fetch('data.csv');
+                const text = await res.text();
+                const rows = text.split('\n').filter(r => r.trim() !== '');
                 carsData = rows.slice(1).map(row => {
-                    const cols = row.split(',').map(c => c.trim());
-                    return {
-                        client: cols[0] || '',
-                        plate: cols[1] || '',
-                        model: cols[2] || '',
-                        color: cols[3] || '',
-                        employee: cols[4] || '',
-                        status: cols[5] || ''
-                    };
+                    const c = row.split(',').map(field => field.trim());
+                    return { client: c[0], plate: c[1], model: c[2], color: c[3], employee: c[4], status: c[5] };
                 });
-                console.log("Data loaded: " + carsData.length + " cars.");
-            } catch (e) {
-                console.error("CSV loading failed. Check if data.csv exists.");
-            }
+            } catch (e) { console.error("CSV error"); }
         }
 
-        // Global Search Functionality (Searches all columns)
+        // Search across all properties
         function handleGlobalSearch() {
             const query = document.getElementById('globalSearch').value.toLowerCase();
-            const resultsBox = document.getElementById('searchResults');
-            resultsBox.innerHTML = '';
-
+            const box = document.getElementById('searchResults');
+            box.innerHTML = '';
             if (query.length < 2) return;
 
-            // Search across all fields
             const matches = carsData.filter(c => 
-                c.plate.toLowerCase().includes(query) ||
-                c.employee.toLowerCase().includes(query) ||
-                c.client.toLowerCase().includes(query) ||
-                c.model.toLowerCase().includes(query) ||
-                c.color.toLowerCase().includes(query) ||
-                c.status.toLowerCase().includes(query)
-            ).slice(0, 10);
+                Object.values(c).some(val => String(val).toLowerCase().includes(query))
+            ).slice(0, 8);
 
             matches.forEach(car => {
-                const div = document.createElement('div');
-                div.className = 'result-item';
-                div.innerHTML = `
-                    <strong>${car.plate}</strong> | ${car.client}
-                    <div>${car.employee} - ${car.model} (${car.color})</div>
-                    <div style="color: ${car.status.includes('Active') || car.status.includes('نشط') ? '#34c759' : '#ff3b30'}">
-                        ● ${car.status}
-                    </div>
-                `;
-                div.onclick = () => selectCar(car);
-                resultsBox.appendChild(div);
+                const d = document.createElement('div');
+                d.className = 'result-item';
+                d.innerHTML = `<strong>${car.plate}</strong> | ${car.client} <br> <small>${car.employee} (${car.color})</small>`;
+                d.onclick = () => {
+                    document.getElementById('targetPlate').value = car.plate;
+                    document.getElementById('targetPlate').dataset.client = car.client;
+                    box.innerHTML = '';
+                };
+                box.appendChild(d);
             });
-        }
-
-        function selectCar(car) {
-            document.getElementById('targetPlate').value = car.plate;
-            document.getElementById('targetPlate').dataset.client = car.client;
-            document.getElementById('searchResults').innerHTML = '';
-            document.getElementById('globalSearch').value = '';
         }
 
         function submitEntry() {
@@ -262,84 +274,60 @@
             const unit = document.getElementById('unitSelect').value;
             const slot = document.getElementById('slotNumber').value;
 
-            if (!plate || !slot) {
-                alert("الرجاء اختيار مركبة وإدخال رقم الموقف");
-                return;
-            }
+            if (!plate || !slot) return alert("يرجى اختيار سيارة ورقم موقف");
 
             dailyEntries.push({ plate, client, unit, slot });
-            alert(`تم تسجيل الدخول: ${plate}`);
-            
+            alert("تم التسجيل");
             document.getElementById('targetPlate').value = '';
             document.getElementById('slotNumber').value = '';
-            updateStats();
         }
 
         function updateStats() {
-            const companyCounts = {};
-            dailyEntries.forEach(e => companyCounts[e.client] = (companyCounts[e.client] || 0) + 1);
+            const counts = {};
+            dailyEntries.forEach(e => counts[e.client] = (counts[e.client] || 0) + 1);
 
             const ctx = document.getElementById('companyChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
-            
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(companyCounts),
-                    datasets: [{
-                        label: 'عدد المركبات',
-                        data: Object.values(companyCounts),
-                        backgroundColor: '#0a84ff',
-                        borderRadius: 10
-                    }]
+                    labels: Object.keys(counts),
+                    datasets: [{ label: 'السيارات', data: Object.values(counts), backgroundColor: '#0a84ff', borderRadius: 8 }]
                 },
-                options: {
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        x: { ticks: { color: '#888' } },
-                        y: { ticks: { color: '#888' }, grid: { color: 'rgba(128,128,128,0.1)' } }
-                    }
-                }
+                options: { plugins: { legend: { display: false } } }
             });
 
-            const unitStats = document.getElementById('parkingStats');
             const unitCounts = {};
             dailyEntries.forEach(e => unitCounts[e.unit] = (unitCounts[e.unit] || 0) + 1);
-            
             const units = ['P1', 'P1-VIP', 'P2', 'P3', 'P4', 'Landscape'];
-            unitStats.innerHTML = units.map(u => `
-                <div class="stat-box">
-                    <small>${u}</small>
-                    <span>${unitCounts[u] || 0}</span>
-                </div>
+            document.getElementById('parkingStats').innerHTML = units.map(u => `
+                <div class="stat-box"><small>${u}</small><span>${unitCounts[u] || 0}</span></div>
             `).join('');
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
+        function toggleDisplayMode() {
+            document.body.classList.toggle('desktop-mode');
+            const icon = document.getElementById('modeIcon');
+            icon.className = document.body.classList.contains('desktop-mode') ? 'fas fa-mobile-alt icon-btn' : 'fas fa-desktop icon-btn';
         }
 
+        function toggleTheme() { document.body.classList.toggle('dark'); }
+        
         function toggleView() {
             const ev = document.getElementById('entryView');
             const sv = document.getElementById('statsView');
-            if (ev.style.display === 'none') {
-                ev.style.display = 'block';
-                sv.style.display = 'none';
-            } else {
-                ev.style.display = 'none';
-                sv.style.display = 'block';
-                updateStats();
-            }
+            const isStats = ev.style.display === 'none';
+            ev.style.display = isStats ? 'flex' : 'none';
+            sv.style.display = isStats ? 'none' : 'flex';
+            if (!isStats) updateStats();
         }
 
         function exportReport() {
-            const area = document.getElementById('exportArea');
-            html2canvas(area, { 
-                backgroundColor: document.body.classList.contains('dark') ? '#000000' : '#f2f2f7',
-                scale: 2 
+            html2canvas(document.getElementById('exportArea'), {
+                backgroundColor: document.body.classList.contains('dark') ? '#000000' : '#f2f2f7'
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `Majdoul_Report_${new Date().toLocaleDateString()}.png`;
+                link.download = 'Mjdoul_Report.png';
                 link.href = canvas.toDataURL();
                 link.click();
             });
