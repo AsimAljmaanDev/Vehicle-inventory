@@ -81,9 +81,19 @@
             border-right: 8px solid #ccc;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             cursor: pointer;
+            position: relative;
         }
         .car-card.active-status { border-right-color: var(--status-active); }
         .car-card.inactive-status { border-right-color: var(--status-inactive); }
+
+        .edit-icon {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: var(--accent);
+            font-size: 18px;
+            padding: 10px;
+        }
 
         .car-card h3 { margin: 0 0 10px 0; font-size: 20px; color: var(--accent); }
         .car-card p { margin: 5px 0; font-size: 15px; opacity: 0.9; }
@@ -104,9 +114,6 @@
             padding: 25px;
         }
 
-        .search-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; opacity: 0.7; }
-
         input, select {
             width: 100%; padding: 15px; border-radius: 12px; border: none;
             background: var(--input-bg); color: var(--text-color);
@@ -118,15 +125,9 @@
         .submit-btn {
             width: 100%; padding: 16px; background: var(--accent); color: white;
             border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer;
+            margin-bottom: 10px;
         }
 
-        .stat-row {
-            display: flex; justify-content: space-between; padding: 15px 0;
-            border-bottom: 0.5px solid var(--glass-border); font-size: 18px;
-        }
-        .stat-row b { color: var(--accent); }
-
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--card-bg); backdrop-filter: blur(25px);
@@ -137,6 +138,12 @@
         .nav-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-tab.active { color: var(--accent); }
 
+        /* Modal Styles */
+        #editModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 2000; display: none;
+            overflow-y: auto; padding: 20px; box-sizing: border-box;
+        }
     </style>
 </head>
 <body class="dark">
@@ -155,16 +162,13 @@
     <div class="container">
         
         <section id="page-search" class="page-section active">
-            <div class="glass-panel search-group">
+            <div class="glass-panel">
                 <label>البحث بواسطة اللوحة</label>
                 <input type="text" id="plateSearch" placeholder="أدخل رقم اللوحة فقط..." oninput="searchByPlate()">
-                
                 <hr style="opacity: 0.1; margin: 20px 0;">
-                
                 <label>البحث بواسطة (الاسم، اللون، أو الموديل)</label>
                 <input type="text" id="infoSearch" placeholder="أدخل الاسم أو الموديل..." oninput="searchByInfo()">
             </div>
-            
             <div id="cardsResult"></div>
         </section>
 
@@ -173,7 +177,6 @@
                 <h2 style="margin-top:0">📝 تسجيل مركبة</h2>
                 <label>المركبة المختارة</label>
                 <input type="text" id="selectedLabel" readonly placeholder="يرجى الاختيار من البحث">
-                
                 <label>الوحدة (Unit)</label>
                 <select id="unitSelect">
                     <option value="P1">P1</option>
@@ -183,10 +186,8 @@
                     <option value="P4">P4</option>
                     <option value="Landscape">Landscape</option>
                 </select>
-
                 <label>رقم الموقف</label>
                 <input type="number" id="slotNo" placeholder="أدخل رقم الموقف">
-
                 <button class="submit-btn" onclick="confirmEntry()">تأكيد العملية</button>
             </div>
         </section>
@@ -205,8 +206,29 @@
             <button class="submit-btn" style="margin-top:20px; background:#34c759" onclick="saveAsImg()">
                 <i class="fas fa-camera"></i> تصدير كصورة
             </button>
+            <button class="submit-btn" style="background:#8e8e93" onclick="clearLocalData()">
+                <i class="fas fa-trash"></i> إعادة ضبط البيانات الأصلية
+            </button>
         </section>
 
+    </div>
+
+    <div id="editModal">
+        <div class="glass-panel" style="max-width: 500px; margin: 20px auto;">
+            <h2 style="margin-top:0"><i class="fas fa-user-edit"></i> تعديل بيانات الموظف</h2>
+            <input type="hidden" id="edit-index">
+            <label>اسم الموظف</label>
+            <input type="text" id="edit-emp">
+            <label>رقم اللوحة</label>
+            <input type="text" id="edit-plate">
+            <label>الشركة / العميل</label>
+            <input type="text" id="edit-client">
+            <label>الموديل واللون</label>
+            <input type="text" id="edit-model">
+            
+            <button class="submit-btn" onclick="saveEdits()">حفظ التعديلات</button>
+            <button class="submit-btn" style="background: var(--status-inactive);" onclick="closeEditModal()">إلغاء</button>
+        </div>
     </div>
 
     <nav class="bottom-nav">
@@ -231,6 +253,13 @@
         let myChart = null;
 
         async function loadData() {
+            // Check if there is edited data in local storage
+            const savedData = localStorage.getItem('majdoul_db');
+            if (savedData) {
+                db = JSON.parse(savedData);
+                return;
+            }
+
             try {
                 const res = await fetch('data.csv');
                 const text = await res.text();
@@ -242,21 +271,18 @@
             } catch(e) { console.error("CSV Error"); }
         }
 
-        // 1. البحث برقم اللوحة فقط
         function searchByPlate() {
-            document.getElementById('infoSearch').value = ''; // تفريغ الحقل الآخر
+            document.getElementById('infoSearch').value = '';
             const q = document.getElementById('plateSearch').value.toLowerCase();
             renderCards(db.filter(i => i.plate.toLowerCase().includes(q)));
         }
 
-        // 2. البحث بالمعلومات الأخرى
         function searchByInfo() {
-            document.getElementById('plateSearch').value = ''; // تفريغ الحقل الآخر
+            document.getElementById('plateSearch').value = '';
             const q = document.getElementById('infoSearch').value.toLowerCase();
             renderCards(db.filter(i => 
                 i.emp.toLowerCase().includes(q) || 
                 i.model.toLowerCase().includes(q) || 
-                i.color.toLowerCase().includes(q) ||
                 i.client.toLowerCase().includes(q)
             ));
         }
@@ -265,16 +291,20 @@
             const container = document.getElementById('cardsResult');
             container.innerHTML = '';
             
-            const queryPlate = document.getElementById('plateSearch').value;
-            const queryInfo = document.getElementById('infoSearch').value;
-            if(!queryPlate && !queryInfo) return;
+            const qP = document.getElementById('plateSearch').value;
+            const qI = document.getElementById('infoSearch').value;
+            if(!qP && !qI) return;
 
             filtered.slice(0, 15).forEach(item => {
+                // Get absolute index in the main DB for editing
+                const realIndex = db.findIndex(x => x.plate === item.plate && x.emp === item.emp);
                 const isActive = item.status.toLowerCase().includes('active') || item.status.includes('نشط');
+                
                 const card = document.createElement('div');
                 card.className = `car-card ${isActive ? 'active-status' : 'inactive-status'}`;
                 
                 card.innerHTML = `
+                    <i class="fas fa-edit edit-icon" onclick="openEditModal(${realIndex}); event.stopPropagation();"></i>
                     <h3>${item.plate}</h3>
                     <p><b>العميل:</b> ${item.client}</p>
                     <p><b>الموظف:</b> ${item.emp}</p>
@@ -291,6 +321,41 @@
                 };
                 container.appendChild(card);
             });
+        }
+
+        // Editing Functions
+        function openEditModal(index) {
+            const item = db[index];
+            document.getElementById('edit-index').value = index;
+            document.getElementById('edit-emp').value = item.emp;
+            document.getElementById('edit-plate').value = item.plate;
+            document.getElementById('edit-client').value = item.client;
+            document.getElementById('edit-model').value = item.model;
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function saveEdits() {
+            const idx = document.getElementById('edit-index').value;
+            db[idx].emp = document.getElementById('edit-emp').value;
+            db[idx].plate = document.getElementById('edit-plate').value;
+            db[idx].client = document.getElementById('edit-client').value;
+            db[idx].model = document.getElementById('edit-model').value;
+
+            localStorage.setItem('majdoul_db', JSON.stringify(db));
+            alert("تم حفظ التعديلات بنجاح");
+            closeEditModal();
+            searchByPlate() || searchByInfo();
+        }
+
+        function clearLocalData() {
+            if(confirm("هل تريد حذف التعديلات والعودة لبيانات الملف الأصلية؟")) {
+                localStorage.removeItem('majdoul_db');
+                location.reload();
+            }
         }
 
         function switchPage(pageId, el) {
@@ -316,7 +381,7 @@
             const units = ['P1', 'P1-VIP', 'P2', 'P3', 'P4', 'Landscape'];
             const uCounts = {};
             logs.forEach(l => uCounts[l.unit] = (uCounts[l.unit] || 0) + 1);
-            document.getElementById('unitCounts').innerHTML = units.map(u => `<div class="stat-row">${u} <b>- ${uCounts[u] || 0}</b></div>`).join('');
+            document.getElementById('unitCounts').innerHTML = units.map(u => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:0.5px solid var(--glass-border)">${u} <b>- ${uCounts[u] || 0}</b></div>`).join('');
 
             const cCounts = {};
             logs.forEach(l => cCounts[l.client] = (cCounts[l.client] || 0) + 1);
@@ -328,7 +393,11 @@
                     labels: Object.keys(cCounts),
                     datasets: [{ label: 'المركبات', data: Object.values(cCounts), backgroundColor: '#0a84ff', borderRadius: 8 }]
                 },
-                options: { color: document.body.classList.contains('dark') ? '#fff' : '#000' }
+                options: { 
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
             });
         }
 
@@ -336,9 +405,12 @@
         function toggleDarkMode() { document.body.classList.toggle('dark'); }
         
         function saveAsImg() {
-            html2canvas(document.getElementById('captureArea'), { backgroundColor: document.body.classList.contains('dark') ? '#000' : '#f2f2f7' }).then(canvas => {
+            html2canvas(document.getElementById('captureArea'), { 
+                backgroundColor: document.body.classList.contains('dark') ? '#000' : '#f2f2f7',
+                scale: 2 
+            }).then(canvas => {
                 const a = document.createElement('a');
-                a.download = 'Report.png';
+                a.download = 'Parking-Report.png';
                 a.href = canvas.toDataURL();
                 a.click();
             });
