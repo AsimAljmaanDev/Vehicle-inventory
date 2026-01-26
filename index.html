@@ -9,127 +9,73 @@
     
     <style>
         :root {
-            --bg-color: #f2f2f7;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --text-color: #1c1c1e;
-            --accent: #007aff;
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --input-bg: rgba(120, 120, 128, 0.12);
-            --status-active: #34c759;
-            --status-inactive: #ff3b30;
-            --container-width: 500px;
+            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.85); --text-color: #1c1c1e;
+            --accent: #007aff; --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(120, 120, 128, 0.12);
+            --status-active: #34c759; --status-inactive: #ff3b30; --container-width: 500px;
         }
 
         body.dark {
-            --bg-color: #000000;
-            --card-bg: rgba(28, 28, 30, 0.9);
-            --text-color: #ffffff;
-            --accent: #0a84ff;
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --input-bg: rgba(120, 120, 128, 0.24);
+            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.9); --text-color: #ffffff;
+            --accent: #0a84ff; --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(120, 120, 128, 0.24);
         }
 
         body.desktop-mode { --container-width: 1000px; }
 
         body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-            padding-bottom: 100px;
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            background-color: var(--bg-color); color: var(--text-color); transition: all 0.3s ease; padding-bottom: 100px;
         }
 
         header {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 10px 20px;
-            border-bottom: 0.5px solid var(--glass-border);
-            position: sticky; top: 0; z-index: 1000;
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 10px 20px; border-bottom: 0.5px solid var(--glass-border); position: sticky; top: 0; z-index: 1000;
         }
 
-        .header-content {
-            max-width: var(--container-width);
-            margin: 0 auto;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .logo-majdoul { height: 40px; width: auto; }
-        .logo-link { height: 30px; width: auto; }
+        .header-content { max-width: var(--container-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo-majdoul { height: 40px; } .logo-link { height: 30px; }
 
         .top-actions { display: flex; gap: 12px; }
-        .icon-btn {
-            font-size: 18px; color: var(--accent); cursor: pointer;
-            padding: 10px; border-radius: 50%; background: var(--input-bg);
-        }
+        .icon-btn { font-size: 18px; color: var(--accent); cursor: pointer; padding: 10px; border-radius: 50%; background: var(--input-bg); }
 
         .container { max-width: var(--container-width); margin: 0 auto; padding: 20px; }
-
         .page-section { display: none; animation: slideUp 0.3s ease-out; }
         .page-section.active { display: block; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-panel {
-            background: var(--card-bg);
-            backdrop-filter: blur(30px);
-            border: 0.5px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
+        .glass-panel { background: var(--card-bg); backdrop-filter: blur(30px); border: 0.5px solid var(--glass-border); border-radius: 25px; padding: 25px; margin-bottom: 20px; }
 
-        input, select {
-            width: 100%; padding: 15px; border-radius: 12px; border: none;
-            background: var(--input-bg); color: var(--text-color);
-            font-size: 16px; margin-bottom: 15px; box-sizing: border-box;
-            outline: none;
-        }
+        input, select { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--input-bg); color: var(--text-color); font-size: 16px; margin-bottom: 15px; outline: none; }
 
-        .car-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-right: 8px solid #ccc;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            position: relative;
-        }
+        .car-card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; border-right: 8px solid #ccc; box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; position: relative; }
         .car-card.active-status { border-right-color: var(--status-active); }
         .car-card.inactive-status { border-right-color: var(--status-inactive); }
-
         .edit-icon { position: absolute; top: 15px; left: 15px; color: var(--accent); padding: 10px; }
 
-        .status-badge {
-            display: inline-block; padding: 5px 15px; border-radius: 50px;
-            font-size: 13px; font-weight: bold; margin-top: 10px;
-        }
+        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 50px; font-size: 13px; font-weight: bold; margin-top: 10px; }
         .active-badge { background: rgba(52, 199, 89, 0.2); color: var(--status-active); }
         .inactive-badge { background: rgba(255, 59, 48, 0.2); color: var(--status-inactive); }
 
-        .submit-btn {
-            width: 100%; padding: 16px; background: var(--accent); color: white;
-            border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
+        .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--card-bg); backdrop-filter: blur(25px);
-            border-top: 0.5px solid var(--glass-border);
-            display: flex; padding: 10px 0 25px; z-index: 1000;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); backdrop-filter: blur(25px); border-top: 0.5px solid var(--glass-border); display: flex; padding: 10px 0 25px; z-index: 1000; }
         .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; }
         .nav-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-tab.active { color: var(--accent); }
 
-        #editModal, #addModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 2000; display: none;
-            overflow-y: auto; padding: 20px; box-sizing: border-box;
-        }
+        /* الزر العائم للدعم الفني */
+        .support-float { position: fixed; bottom: 100px; left: 20px; width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1500; cursor: pointer; transition: 0.3s; }
+        .support-float:hover { transform: scale(1.1); }
+
+        #supportModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2100; display: none; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        
+        /* تصميم الـ Chat Bot */
+        .chat-container { height: 300px; background: var(--input-bg); border-radius: 15px; padding: 15px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; }
+        .bot-msg { background: var(--accent); color: white; align-self: flex-start; }
+        .user-msg { background: #e9e9eb; color: #000; align-self: flex-end; }
+        
+        #editModal, #addModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: none; overflow-y: auto; padding: 20px; box-sizing: border-box; }
     </style>
 </head>
 <body class="dark">
@@ -163,10 +109,7 @@
                 <label>المركبة المختارة</label>
                 <input type="text" id="selectedLabel" readonly placeholder="يرجى الاختيار من البحث">
                 <label>الوحدة (Unit)</label>
-                <select id="unitSelect">
-                    <option>P1</option><option>P1-VIP</option><option>P2</option>
-                    <option>P3</option><option>P4</option><option>Landscape</option>
-                </select>
+                <select id="unitSelect"><option>P1</option><option>P1-VIP</option><option>P2</option><option>P3</option><option>P4</option><option>Landscape</option></select>
                 <label>رقم الموقف</label>
                 <input type="number" id="slotNo" placeholder="أدخل رقم الموقف">
                 <button class="submit-btn" onclick="confirmEntry()">تأكيد وإرسال البيانات</button>
@@ -174,9 +117,35 @@
         </section>
     </div>
 
+    <div class="support-float" onclick="openSupport()">
+        <i class="fas fa-headset"></i>
+    </div>
+
+    <div id="supportModal">
+        <div class="glass-panel" style="max-width: 500px; margin: 20px auto;">
+            <h2 style="margin-top:0"><i class="fas fa-info-circle"></i> الدعم الفني</h2>
+            <p><b>المطور:</b> Asim Aljma'an</p>
+            <p><b>البريد:</b> <a href="mailto:asimaljmaan@hotmail.com" style="color:var(--accent)">asimaljmaan@hotmail.com</a></p>
+            <p><b>الجوال:</b> <a href="tel:+966500823643" style="color:var(--accent)">+966500823643</a></p>
+            
+            <hr style="opacity:0.2; margin:20px 0">
+            
+            <h3><i class="fas fa-robot"></i> مساعدك الذكي</h3>
+            <div class="chat-container" id="chatBox">
+                <div class="chat-msg bot-msg">مرحباً! أنا هنا لأعلمك كيف تستخدم النظام. ماذا تريد أن تعرف؟</div>
+            </div>
+            <div style="display:flex; gap:5px; flex-wrap: wrap;">
+                <button class="submit-btn" style="font-size:12px; padding:8px" onclick="askBot('search')">كيف أبحث؟</button>
+                <button class="submit-btn" style="font-size:12px; padding:8px" onclick="askBot('add')">كيف أضيف مركبة؟</button>
+                <button class="submit-btn" style="font-size:12px; padding:8px" onclick="askBot('log')">كيف أسجل حصر؟</button>
+            </div>
+            <button class="submit-btn" style="background: #8e8e93; margin-top:20px;" onclick="closeModal('supportModal')">إغلاق</button>
+        </div>
+    </div>
+
     <div id="editModal">
         <div class="glass-panel" style="max-width: 500px; margin: 20px auto;">
-            <h2 style="margin-top:0">🛠️ تعديل البيانات</h2>
+            <h2>🛠️ تعديل البيانات</h2>
             <input type="hidden" id="edit-index">
             <label>العميل</label><input type="text" id="edit-client">
             <label>اللوحة</label><input type="text" id="edit-plate">
@@ -184,12 +153,9 @@
             <label>اللون</label><input type="text" id="edit-color">
             <label>اسم الموظف</label><input type="text" id="edit-emp">
             <label>الحالة</label>
-            <select id="edit-status">
-                <option value="نشط">نشط</option>
-                <option value="غير نشط">غير نشط</option>
-            </select>
+            <select id="edit-status"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
             <button class="submit-btn" onclick="saveEdits()">حفظ التعديلات</button>
-            <button class="submit-btn" style="background: var(--status-inactive); margin-top:15px;" onclick="deleteVehicle()">حذف المركبة نهائياً</button>
+            <button class="submit-btn" style="background: var(--status-inactive); margin-top:15px;" onclick="deleteVehicle()">حذف نهائياً</button>
             <button class="submit-btn" style="background: #8e8e93; margin-top:10px;" onclick="closeModal('editModal')">إلغاء</button>
         </div>
     </div>
@@ -232,23 +198,18 @@
             const container = document.getElementById('cardsResult');
             container.innerHTML = '';
             if(!filtered.length) return;
-
             filtered.slice(0, 15).forEach(item => {
                 const realIdx = db.findIndex(x => x.plate === item.plate && x.emp === item.emp);
-                const isActive = !item.status.includes('غير');
+                const isActive = item.status && (item.status === 'نشط' || item.status === 'Active');
                 const card = document.createElement('div');
                 card.className = `car-card ${isActive ? 'active-status' : 'inactive-status'}`;
-                
                 card.innerHTML = `
                     <i class="fas fa-edit edit-icon" onclick="checkAuth('edit', ${realIdx}); event.stopPropagation();"></i>
                     <p style="color:var(--accent); font-weight:bold; margin-bottom:5px">العميل: ${item.client}</p>
                     <h3 style="margin:5px 0">اللوحة: ${item.plate}</h3>
-                    <p>الموديل: ${item.model}</p>
-                    <p>اللون: ${item.color}</p>
-                    <p>اسم الموظف: ${item.emp}</p>
+                    <p>الموديل: ${item.model}</p><p>اللون: ${item.color}</p><p>اسم الموظف: ${item.emp}</p>
                     <span class="status-badge ${isActive ? 'active-badge' : 'inactive-badge'}">الحالة: ${item.status}</span>
                 `;
-
                 card.onclick = () => {
                     activeCar = item;
                     document.getElementById('selectedLabel').value = `${item.plate} - ${item.emp}`;
@@ -259,7 +220,7 @@
         }
 
         function checkAuth(mode, idx) {
-            const p = prompt("يُرجى إدخال كلمة المرور للمتابعة:");
+            const p = prompt("يُرجى إدخال كلمة المرور:");
             if(p !== "0707") return alert("خطأ!");
             if(mode === 'add') document.getElementById('addModal').style.display = 'block';
             if(mode === 'edit') {
@@ -270,45 +231,35 @@
                 document.getElementById('edit-model').value = item.model;
                 document.getElementById('edit-color').value = item.color;
                 document.getElementById('edit-emp').value = item.emp;
-                document.getElementById('edit-status').value = item.status.includes('نشط') ? 'نشط' : 'غير نشط';
+                document.getElementById('edit-status').value = (item.status === 'نشط' || item.status === 'Active') ? 'نشط' : 'غير نشط';
                 document.getElementById('editModal').style.display = 'block';
             }
         }
 
-        function post(data) {
-            fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
-            .then(() => { alert("تم التحديث بنجاح"); location.reload(); });
+        function askBot(topic) {
+            const chatBox = document.getElementById('chatBox');
+            let userQ = "", botA = "";
+            if(topic === 'search') { userQ = "كيف أبحث؟"; botA = "للبحث، استخدم خانة 'اللوحة' للأرقام، أو خانة 'الاسم' للبحث عن الموظف أو الشركة. ستظهر النتائج تلقائياً أسفل الخانات."; }
+            if(topic === 'add') { userQ = "كيف أضيف مركبة؟"; botA = "اضغط على زر 'إضافة مركبة جديدة' باللون الأخضر في صفحة البحث، أدخل كلمة السر (0707) ثم املأ البيانات."; }
+            if(topic === 'log') { userQ = "كيف أسجل حصر؟"; botA = "ابحث عن المركبة أولاً واضغط عليها، سيتم نقلك لصفحة 'التسجيل'، اختر الدور (P1, P2..) ورقم الموقف ثم اضغط تأكيد."; }
+            
+            chatBox.innerHTML += `<div class="chat-msg user-msg">${userQ}</div>`;
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="chat-msg bot-msg">${botA}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 500);
         }
 
-        function saveNew() {
-            post({ action: 'add', client: document.getElementById('add-client').value, plate: document.getElementById('add-plate').value, model: document.getElementById('add-model').value, color: document.getElementById('add-color').value, emp: document.getElementById('add-emp').value, status: 'نشط' });
-        }
-
-        function saveEdits() {
-            const p = prompt("تأكيد كلمة المرور للحفظ:");
-            if(p !== "0707") return alert("خطأ!");
-            const idx = document.getElementById('edit-index').value;
-            post({ action: 'edit', oldPlate: db[idx].plate, client: document.getElementById('edit-client').value, plate: document.getElementById('edit-plate').value, model: document.getElementById('edit-model').value, color: document.getElementById('edit-color').value, emp: document.getElementById('edit-emp').value, status: document.getElementById('edit-status').value });
-        }
-
-        function deleteVehicle() {
-            const p = prompt("أدخل كلمة مرور الحذف النهائي:");
-            if(p !== "deleteme") return alert("كلمة المرور خاطئة!");
-            if(confirm("هل أنت متأكد من الحذف النهائي؟")) {
-                post({ action: 'delete', plate: db[document.getElementById('edit-index').value].plate });
-            }
-        }
-
-        function confirmEntry() {
-            if(!activeCar) return alert("اختر مركبة أولاً");
-            post({ action: 'log_entry', client: activeCar.client, plate: activeCar.plate, emp: activeCar.emp, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value });
-        }
-
+        function openSupport() { document.getElementById('supportModal').style.display = 'block'; }
+        function post(data) { fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) }).then(() => { alert("تم التحديث"); location.reload(); }); }
+        function saveNew() { post({ action: 'add', client: document.getElementById('add-client').value, plate: document.getElementById('add-plate').value, model: document.getElementById('add-model').value, color: document.getElementById('add-color').value, emp: document.getElementById('add-emp').value, status: 'نشط' }); }
+        function saveEdits() { if(prompt("تأكيد كلمة المرور:")!=="0707") return; const idx = document.getElementById('edit-index').value; post({ action: 'edit', oldPlate: db[idx].plate, client: document.getElementById('edit-client').value, plate: document.getElementById('edit-plate').value, model: document.getElementById('edit-model').value, color: document.getElementById('edit-color').value, emp: document.getElementById('edit-emp').value, status: document.getElementById('edit-status').value }); }
+        function deleteVehicle() { if(prompt("كلمة سر الحذف:")!=="deleteme") return; post({ action: 'delete', plate: db[document.getElementById('edit-index').value].plate }); }
+        function confirmEntry() { if(!activeCar) return alert("اختر مركبة"); post({ action: 'log_entry', client: activeCar.client, plate: activeCar.plate, emp: activeCar.emp, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value }); }
         function searchByPlate() { render(db.filter(i => i.plate.toLowerCase().includes(document.getElementById('plateSearch').value.toLowerCase()))); }
         function searchByInfo() { render(db.filter(i => i.emp.toLowerCase().includes(document.getElementById('infoSearch').value.toLowerCase()) || i.client.toLowerCase().includes(document.getElementById('infoSearch').value.toLowerCase()))); }
         function switchPage(id, el) { document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active')); document.getElementById(id).classList.add('active'); el.classList.add('active'); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        
         loadData();
     </script>
 </body>
