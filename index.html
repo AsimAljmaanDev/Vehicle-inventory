@@ -4,402 +4,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام مواقف برج مجدول</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root {
-            --bg-color: #f2f2f7;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --text-color: #1c1c1e;
-            --accent: #007aff;
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --input-bg: rgba(120, 120, 128, 0.12);
-            --status-active: #34c759;
-            --status-inactive: #ff3b30;
-            --container-width: 500px;
+            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.85); --text-color: #1c1c1e;
+            --accent: #007aff; --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(120, 120, 128, 0.12);
+            --status-active: #34c759; --status-inactive: #ff3b30; --container-width: 500px;
         }
-
         body.dark {
-            --bg-color: #000000;
-            --card-bg: rgba(28, 28, 30, 0.9);
-            --text-color: #ffffff;
-            --accent: #0a84ff;
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --input-bg: rgba(120, 120, 128, 0.24);
+            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.9); --text-color: #ffffff;
+            --accent: #0a84ff; --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(120, 120, 128, 0.24);
         }
-
-        body.desktop-mode { --container-width: 1000px; }
-
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-            padding-bottom: 100px;
-        }
-
-        header {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 10px 20px;
-            border-bottom: 0.5px solid var(--glass-border);
-            position: sticky; top: 0; z-index: 1000;
-        }
-
-        .header-content {
-            max-width: var(--container-width);
-            margin: 0 auto;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .logo-majdoul { height: 40px; width: auto; object-fit: contain; }
-        .logo-link { height: 30px; width: auto; object-fit: contain; }
-
-        .top-actions { display: flex; gap: 12px; }
-        .icon-btn {
-            font-size: 18px; color: var(--accent); cursor: pointer;
-            padding: 10px; border-radius: 50%; background: var(--input-bg);
-        }
-
-        .container { max-width: var(--container-width); margin: 0 auto; padding: 20px; }
-
-        .page-section { display: none; animation: slideUp 0.3s ease-out; }
-        .page-section.active { display: block; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        .car-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-right: 8px solid #ccc;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            position: relative;
-        }
+        body { margin: 0; font-family: -apple-system, sans-serif; background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; transition: 0.3s; }
+        header { background: var(--card-bg); backdrop-filter: blur(20px); padding: 10px 20px; border-bottom: 0.5px solid var(--glass-border); position: sticky; top: 0; z-index: 1000; }
+        .header-content { max-width: 500px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo-majdoul { height: 40px; } .logo-link { height: 30px; }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .page-section { display: none; } .page-section.active { display: block; }
+        .glass-panel { background: var(--card-bg); backdrop-filter: blur(30px); border: 0.5px solid var(--glass-border); border-radius: 25px; padding: 25px; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--input-bg); color: var(--text-color); margin-bottom: 15px; box-sizing: border-box; }
+        .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        /* تصميم كرت العرض */
+        .car-card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; border-right: 8px solid #ccc; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .car-card.active-status { border-right-color: var(--status-active); }
         .car-card.inactive-status { border-right-color: var(--status-inactive); }
-
-        .edit-icon {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: var(--accent);
-            font-size: 18px;
-            padding: 10px;
-        }
-
-        .glass-panel {
-            background: var(--card-bg);
-            backdrop-filter: blur(30px);
-            border: 0.5px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        input, select {
-            width: 100%; padding: 15px; border-radius: 12px; border: none;
-            background: var(--input-bg); color: var(--text-color);
-            font-size: 16px; margin-bottom: 15px; box-sizing: border-box;
-            outline: none; border: 1px solid transparent;
-        }
-        input:focus { border-color: var(--accent); }
-
-        .submit-btn {
-            width: 100%; padding: 16px; background: var(--accent); color: white;
-            border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer;
-            margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--card-bg); backdrop-filter: blur(25px);
-            border-top: 0.5px solid var(--glass-border);
-            display: flex; padding: 10px 0 25px; z-index: 1000;
-        }
-        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; }
-        .nav-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
-        .nav-tab.active { color: var(--accent); }
-
-        /* Modals */
-        #editModal, #addModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 2000; display: none;
-            overflow-y: auto; padding: 20px; box-sizing: border-box;
-        }
-
-        .status-badge {
-            display: inline-block; padding: 5px 12px; border-radius: 50px;
-            font-size: 12px; font-weight: bold; margin-top: 8px;
-        }
+        .edit-icon { position: absolute; top: 15px; left: 15px; color: var(--accent); padding: 10px; cursor: pointer; }
+        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: bold; margin-top: 8px; }
         .active-badge { background: rgba(52, 199, 89, 0.2); color: var(--status-active); }
         .inactive-badge { background: rgba(255, 59, 48, 0.2); color: var(--status-inactive); }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; padding: 10px 0 25px; border-top: 0.5px solid var(--glass-border); }
+        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; }
+        .nav-tab.active { color: var(--accent); }
+        #editModal, #addModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: none; padding: 20px; box-sizing: border-box; overflow-y: auto; }
     </style>
 </head>
 <body class="dark">
 
-    <header>
-        <div class="header-content">
-            <img src="majdoul.png" class="logo-majdoul">
-            <div class="top-actions">
-                <i class="fas fa-desktop icon-btn" onclick="document.body.classList.toggle('desktop-mode')"></i>
-                <i class="fas fa-adjust icon-btn" onclick="document.body.classList.toggle('dark')"></i>
-            </div>
-            <img src="linkexpert.png" class="logo-link">
-        </div>
-    </header>
-
-    <div class="container">
-        <section id="page-search" class="page-section active">
-            <div class="glass-panel">
-                <label>البحث بواسطة اللوحة</label>
-                <input type="text" id="plateSearch" placeholder="رقم اللوحة..." oninput="searchByPlate()">
-                <label>البحث بواسطة الاسم أو الشركة</label>
-                <input type="text" id="infoSearch" placeholder="الاسم، الشركة، الموديل..." oninput="searchByInfo()">
-                
-                <button class="submit-btn" style="background: var(--status-active);" onclick="checkAuth('add')">
-                    <i class="fas fa-plus-circle"></i> إضافة مركبة جديدة
-                </button>
-            </div>
-            <div id="cardsResult"></div>
-        </section>
-
-        <section id="page-inventory" class="page-section">
-            <div class="glass-panel">
-                <h2 style="margin-top:0">📝 تسجيل حصر</h2>
-                <label>المركبة المختارة</label>
-                <input type="text" id="selectedLabel" readonly placeholder="اختر من البحث أولاً">
-                <label>الوحدة (Unit)</label>
-                <select id="unitSelect">
-                    <option value="P1">P1</option><option value="P1-VIP">P1-VIP</option>
-                    <option value="P2">P2</option><option value="P3">P3</option>
-                    <option value="P4">P4</option><option value="Landscape">Landscape</option>
-                </select>
-                <label>رقم الموقف</label>
-                <input type="number" id="slotNo" placeholder="رقم الموقف">
-                <button class="submit-btn" onclick="confirmEntry()">تأكيد وإرسال للشيت</button>
-            </div>
-        </section>
-
-        <section id="page-results" class="page-section">
-            <div id="captureArea">
-                <div class="glass-panel">
-                    <h3>🅿️ حالة الأدوار</h3>
-                    <div id="unitCounts"></div>
-                </div>
-                <div class="glass-panel">
-                    <h3>🏢 إحصائيات الشركات</h3>
-                    <canvas id="chartComp"></canvas>
-                </div>
-            </div>
-            <button class="submit-btn" style="background:#34c759" onclick="saveAsImg()"><i class="fas fa-camera"></i> حفظ تقرير كصورة</button>
-        </section>
+<header>
+    <div class="header-content">
+        <img src="majdoul.png" class="logo-majdoul">
+        <i class="fas fa-adjust icon-btn" onclick="document.body.classList.toggle('dark')"></i>
+        <img src="linkexpert.png" class="logo-link">
     </div>
+</header>
 
-    <div id="addModal">
-        <div class="glass-panel" style="max-width: 500px; margin: 20px auto;">
-            <h2>إضافة مركبة جديدة</h2>
-            <input type="text" id="add-client" placeholder="الشركة">
-            <input type="text" id="add-plate" placeholder="اللوحة">
-            <input type="text" id="add-model" placeholder="الموديل">
-            <input type="text" id="add-color" placeholder="اللون">
-            <input type="text" id="add-emp" placeholder="اسم الموظف">
-            <button class="submit-btn" onclick="saveNew()">حفظ في الشيت</button>
-            <button class="submit-btn" style="background:#8e8e93" onclick="closeModal('addModal')">إلغاء</button>
+<div class="container">
+    <section id="page-search" class="page-section active">
+        <div class="glass-panel">
+            <input type="text" id="plateSearch" placeholder="رقم اللوحة..." oninput="searchByPlate()">
+            <input type="text" id="infoSearch" placeholder="الاسم أو العميل..." oninput="searchByInfo()">
+            <button class="submit-btn" style="background:var(--status-active)" onclick="checkAuth('add')"><i class="fas fa-plus"></i> إضافة مركبة جديدة</button>
         </div>
-    </div>
+        <div id="cardsResult"></div>
+    </section>
 
-    <div id="editModal">
-        <div class="glass-panel" style="max-width: 500px; margin: 20px auto;">
-            <h2>تعديل بيانات المركبة</h2>
-            <input type="hidden" id="edit-index">
-            <label>الموظف</label><input type="text" id="edit-emp">
-            <label>اللوحة</label><input type="text" id="edit-plate">
-            <label>الشركة</label><input type="text" id="edit-client">
-            <label>الموديل واللون</label><input type="text" id="edit-model">
-            <label>الحالة</label>
-            <select id="edit-status">
-                <option value="نشط">نشط (Active)</option>
-                <option value="غير نشط">غير نشط (Inactive)</option>
-            </select>
-            <button class="submit-btn" onclick="saveEdits()">حفظ التعديلات (0707)</button>
-            <button class="submit-btn" style="background:var(--status-inactive); margin-top:15px" onclick="deleteVehicle()">
-                <i class="fas fa-trash"></i> حذف نهائي (deleteme)
-            </button>
-            <button class="submit-btn" style="background:#8e8e93" onclick="closeModal('editModal')">إغاء</button>
+    <section id="page-inventory" class="page-section">
+        <div class="glass-panel">
+            <h2>📝 تسجيل حصر</h2>
+            <input type="text" id="selectedLabel" readonly placeholder="اختر مركبة من البحث">
+            <select id="unitSelect"><option>P1</option><option>P1-VIP</option><option>P2</option><option>P3</option><option>P4</option><option>Landscape</option></select>
+            <input type="number" id="slotNo" placeholder="رقم الموقف">
+            <button class="submit-btn" onclick="confirmEntry()">تأكيد العملية وحفظ في الشيت</button>
         </div>
+    </section>
+</div>
+
+<div id="editModal">
+    <div class="glass-panel">
+        <h2>تعديل بيانات</h2>
+        <input type="hidden" id="edit-index">
+        <label>العميل</label><input type="text" id="edit-client">
+        <label>اللوحة</label><input type="text" id="edit-plate">
+        <label>الموديل</label><input type="text" id="edit-model">
+        <label>اللون</label><input type="text" id="edit-color">
+        <label>الموظف</label><input type="text" id="edit-emp">
+        <label>الحالة</label>
+        <select id="edit-status"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
+        <button class="submit-btn" onclick="saveEdits()">حفظ التعديلات (0707)</button>
+        <button class="submit-btn" style="background:var(--status-inactive); margin-top:10px" onclick="deleteVehicle()">حذف نهائي (deleteme)</button>
+        <button class="submit-btn" style="background:#8e8e93; margin-top:10px" onclick="closeModal('editModal')">إلغاء</button>
     </div>
+</div>
 
-    <nav class="bottom-nav">
-        <div class="nav-tab active" onclick="switchPage('page-search', this)"><i class="fas fa-search"></i><span>البحث</span></div>
-        <div class="nav-tab" onclick="switchPage('page-inventory', this)"><i class="fas fa-plus-square"></i><span>التسجيل</span></div>
-        <div class="nav-tab" onclick="switchPage('page-results', this)"><i class="fas fa-chart-pie"></i><span>النتائج</span></div>
-    </nav>
+<div id="addModal">
+    <div class="glass-panel">
+        <h2>إضافة مركبة</h2>
+        <input type="text" id="add-client" placeholder="العميل/الشركة">
+        <input type="text" id="add-plate" placeholder="رقم اللوحة">
+        <input type="text" id="add-model" placeholder="الموديل">
+        <input type="text" id="add-color" placeholder="اللون">
+        <input type="text" id="add-emp" placeholder="اسم الموظف">
+        <button class="submit-btn" onclick="saveNew()">حفظ</button>
+        <button class="submit-btn" style="background:#8e8e93; margin-top:10px" onclick="closeModal('addModal')">إلغاء</button>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<nav class="bottom-nav">
+    <div class="nav-tab active" onclick="switchPage('page-search', this)"><i class="fas fa-search"></i><div>البحث</div></div>
+    <div class="nav-tab" onclick="switchPage('page-inventory', this)"><i class="fas fa-plus-square"></i><div>التسجيل</div></div>
+</nav>
 
-    <script>
-        let db = []; let logs = []; let activeCar = null; let myChart = null;
-        const SECRET = "0707";
-        const DELETE_PASS = "deleteme";
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydi0UBAjVHbYV1O9jNP4az_snZkjjyAdsBKGVhS45Vlj7yIjskXw8YLrog6uS86B0Z/exec"; 
-        const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
+<script>
+    let db = []; let activeCar = null;
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydi0UBAjVHbYV1O9jNP4az_snZkjjyAdsBKGVhS45Vlj7yIjskXw8YLrog6uS86B0Z/exec"; 
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
-        async function loadData() {
-            try {
-                const res = await fetch(sheetCSVUrl);
-                const text = await res.text();
-                db = text.split('\n').slice(1).map(r => {
-                    const c = r.split(',').map(f => f.trim());
-                    return { client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
-                });
-            } catch(e) { console.error("CSV Load Error"); }
-        }
+    async function loadData() {
+        try {
+            const res = await fetch(CSV_URL);
+            const text = await res.text();
+            db = text.split('\n').slice(1).map(r => {
+                const c = r.split(',').map(f => f.trim());
+                return { client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
+            });
+        } catch(e) { console.error("Error loading CSV"); }
+    }
 
-        function checkAuth(mode, idx) {
-            const p = prompt("أدخل كلمة السر:");
-            if(p !== SECRET) return alert("خطأ!");
-            if(mode === 'add') document.getElementById('addModal').style.display = 'block';
-            if(mode === 'edit') openEditModal(idx);
-        }
+    function render(filtered) {
+        const container = document.getElementById('cardsResult');
+        container.innerHTML = '';
+        if(!filtered.length) return;
 
-        function openEditModal(idx) {
+        filtered.slice(0, 15).forEach(item => {
+            const realIdx = db.findIndex(x => x.plate === item.plate && x.emp === item.emp);
+            const isActive = !item.status.includes('غير');
+            const card = document.createElement('div');
+            card.className = `car-card ${isActive ? 'active-status' : 'inactive-status'}`;
+            
+            // الترتيب المطلوب بدقة: العميل، اللوحة، الموديل، اللون، الموظف، الحالة
+            card.innerHTML = `
+                <i class="fas fa-edit edit-icon" onclick="checkAuth('edit', ${realIdx}); event.stopPropagation();"></i>
+                <p style="color:var(--accent); font-weight:bold; margin-bottom:5px">العميل: ${item.client}</p>
+                <h3 style="margin:5px 0">اللوحة: ${item.plate}</h3>
+                <p>الموديل: ${item.model}</p>
+                <p>اللون: ${item.color}</p>
+                <p>الموظف: ${item.emp}</p>
+                <span class="status-badge ${isActive ? 'active-badge' : 'inactive-badge'}">الحالة: ${item.status}</span>
+            `;
+
+            card.onclick = () => {
+                activeCar = item;
+                document.getElementById('selectedLabel').value = `${item.plate} - ${item.emp}`;
+                switchPage('page-inventory', document.querySelectorAll('.nav-tab')[1]);
+            };
+            container.appendChild(card);
+        });
+    }
+
+    function checkAuth(mode, idx) {
+        const p = prompt("أدخل كلمة السر:");
+        if(p !== "0707") return alert("خطأ!");
+        if(mode === 'add') document.getElementById('addModal').style.display = 'block';
+        if(mode === 'edit') {
             const item = db[idx];
             document.getElementById('edit-index').value = idx;
-            document.getElementById('edit-emp').value = item.emp;
-            document.getElementById('edit-plate').value = item.plate;
             document.getElementById('edit-client').value = item.client;
+            document.getElementById('edit-plate').value = item.plate;
             document.getElementById('edit-model').value = item.model;
-            document.getElementById('edit-status').value = item.status.includes('غير') ? 'غير نشط' : 'نشط';
+            document.getElementById('edit-color').value = item.color;
+            document.getElementById('edit-emp').value = item.emp;
+            document.getElementById('edit-status').value = item.status.includes('نشط') ? 'نشط' : 'غير نشط';
             document.getElementById('editModal').style.display = 'block';
         }
+    }
 
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function post(data) {
+        fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
+        .then(() => { alert("تم التحديث بنجاح"); location.reload(); });
+    }
 
-        function post(data) {
-            fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
-            .then(() => { alert("تم تحديث جوجل شيت بنجاح"); location.reload(); });
-        }
+    function saveNew() {
+        post({ action: 'add', client: document.getElementById('add-client').value, plate: document.getElementById('add-plate').value, model: document.getElementById('add-model').value, color: document.getElementById('add-color').value, emp: document.getElementById('add-emp').value, status: 'نشط' });
+    }
 
-        function saveNew() {
-            post({
-                action: 'add',
-                client: document.getElementById('add-client').value,
-                plate: document.getElementById('add-plate').value,
-                model: document.getElementById('add-model').value,
-                color: document.getElementById('add-color').value,
-                emp: document.getElementById('add-emp').value,
-                status: 'نشط'
-            });
-        }
+    function saveEdits() {
+        const idx = document.getElementById('edit-index').value;
+        post({ action: 'edit', oldPlate: db[idx].plate, client: document.getElementById('edit-client').value, plate: document.getElementById('edit-plate').value, model: document.getElementById('edit-model').value, color: document.getElementById('edit-color').value, emp: document.getElementById('edit-emp').value, status: document.getElementById('edit-status').value });
+    }
 
-        function saveEdits() {
-            const idx = document.getElementById('edit-index').value;
-            post({
-                action: 'edit',
-                oldPlate: db[idx].plate,
-                client: document.getElementById('edit-client').value,
-                plate: document.getElementById('edit-plate').value,
-                model: document.getElementById('edit-model').value,
-                emp: document.getElementById('edit-emp').value,
-                status: document.getElementById('edit-status').value
-            });
-        }
+    function deleteVehicle() {
+        if(prompt("كلمة سر الحذف:") !== "deleteme") return alert("خطأ!");
+        const idx = document.getElementById('edit-index').value;
+        post({ action: 'delete', plate: db[idx].plate });
+    }
 
-        function deleteVehicle() {
-            const p = prompt("أدخل كلمة سر الحذف النهائي:");
-            if(p !== DELETE_PASS) return alert("كلمة سر الحذف خاطئة!");
-            if(confirm("حذف نهائي؟")) {
-                const idx = document.getElementById('edit-index').value;
-                post({ action: 'delete', plate: db[idx].plate });
-            }
-        }
+    function confirmEntry() {
+        if(!activeCar) return alert("اختر مركبة");
+        post({ action: 'log_entry', client: activeCar.client, plate: activeCar.plate, emp: activeCar.emp, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value });
+    }
 
-        function confirmEntry() {
-            if(!activeCar) return alert("اختر مركبة");
-            const unit = document.getElementById('unitSelect').value;
-            const slot = document.getElementById('slotNo').value;
-            post({
-                action: 'log_entry',
-                client: activeCar.client,
-                plate: activeCar.plate,
-                emp: activeCar.emp,
-                unit: unit,
-                slot: slot
-            });
-            logs.push({ ...activeCar, unit, slot });
-        }
-
-        function searchByPlate() {
-            const q = document.getElementById('plateSearch').value.toLowerCase();
-            render(db.filter(i => i.plate.toLowerCase().includes(q)));
-        }
-        function searchByInfo() {
-            const q = document.getElementById('infoSearch').value.toLowerCase();
-            render(db.filter(i => i.emp.toLowerCase().includes(q) || i.client.toLowerCase().includes(q)));
-        }
-
-        function render(filtered) {
-            const container = document.getElementById('cardsResult');
-            container.innerHTML = '';
-            if(!filtered.length) return;
-            filtered.slice(0, 12).forEach(item => {
-                const realIdx = db.findIndex(x => x.plate === item.plate && x.emp === item.emp);
-                const isActive = !item.status.includes('غير');
-                const card = document.createElement('div');
-                card.className = `car-card ${isActive ? 'active-status' : 'inactive-status'}`;
-                card.innerHTML = `
-                    <i class="fas fa-edit edit-icon" onclick="checkAuth('edit', ${realIdx}); event.stopPropagation();"></i>
-                    <h3>${item.plate}</h3>
-                    <p><b>الموظف:</b> ${item.emp}</p>
-                    <p><b>العميل:</b> ${item.client}</p>
-                    <span class="status-badge ${isActive ? 'active-badge' : 'inactive-badge'}">${isActive ? '🟢 نشط' : '🔴 غير نشط'}</span>
-                `;
-                card.onclick = () => {
-                    activeCar = item;
-                    document.getElementById('selectedLabel').value = `${item.plate} - ${item.emp}`;
-                    switchPage('page-inventory', document.querySelectorAll('.nav-tab')[1]);
-                };
-                container.appendChild(card);
-            });
-        }
-
-        function switchPage(pageId, el) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            el.classList.add('active');
-            if(pageId === 'page-results') renderStats();
-        }
-
-        function renderStats() {
-            const units = ['P1', 'P1-VIP', 'P2', 'P3', 'P4', 'Landscape'];
-            const uCounts = {}; logs.forEach(l => uCounts[l.unit] = (uCounts[l.unit] || 0) + 1);
-            document.getElementById('unitCounts').innerHTML = units.map(u => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--glass-border)">${u} <b>${uCounts[u] || 0}</b></div>`).join('');
-            
-            const cCounts = {}; logs.forEach(l => cCounts[l.client] = (cCounts[l.client] || 0) + 1);
-            const ctx = document.getElementById('chartComp').getContext('2d');
-            if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: Object.keys(cCounts), datasets: [{ label: 'المركبات', data: Object.values(cCounts), backgroundColor: '#0a84ff' }] },
-                options: { responsive: true, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function saveAsImg() {
-            html2canvas(document.getElementById('captureArea'), { backgroundColor: '#000', scale: 2 }).then(canvas => {
-                const a = document.createElement('a'); a.download = 'Report.png'; a.href = canvas.toDataURL(); a.click();
-            });
-        }
-
-        loadData();
-    </script>
+    function searchByPlate() { render(db.filter(i => i.plate.toLowerCase().includes(document.getElementById('plateSearch').value.toLowerCase()))); }
+    function searchByInfo() { render(db.filter(i => i.emp.toLowerCase().includes(document.getElementById('infoSearch').value.toLowerCase()) || i.client.toLowerCase().includes(document.getElementById('infoSearch').value.toLowerCase()))); }
+    function switchPage(id, el) { document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active')); document.getElementById(id).classList.add('active'); el.classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    loadData();
+</script>
 </body>
 </html>
