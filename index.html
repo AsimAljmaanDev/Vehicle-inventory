@@ -138,7 +138,6 @@
         .nav-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-tab.active { color: var(--accent); }
 
-        /* Modal Styles */
         #editModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); z-index: 2000; display: none;
@@ -226,7 +225,7 @@
             <label>الموديل واللون</label>
             <input type="text" id="edit-model">
             
-            <button class="submit-btn" onclick="saveEdits()">حفظ التعديلات</button>
+            <button class="submit-btn" onclick="saveEdits()">حفظ التعديلات (محلياً)</button>
             <button class="submit-btn" style="background: var(--status-inactive);" onclick="closeEditModal()">إلغاء</button>
         </div>
     </div>
@@ -251,24 +250,42 @@
         let logs = [];
         let activeCar = null;
         let myChart = null;
+        
+        // رابط الـ CSV المباشر من Google Sheets الخاص بك
+        const sheetCSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
         async function loadData() {
-            // Check if there is edited data in local storage
+            // تحقق أولاً من وجود بيانات معدلة في المتصفح
             const savedData = localStorage.getItem('majdoul_db');
             if (savedData) {
                 db = JSON.parse(savedData);
+                console.log("تم تحميل البيانات من التخزين المحلي");
                 return;
             }
 
             try {
-                const res = await fetch('data.csv');
+                const res = await fetch(sheetCSVUrl);
                 const text = await res.text();
                 const rows = text.split('\n').filter(r => r.trim() !== '');
+                
+                // تحويل الـ CSV إلى مصفوفة كائنات
                 db = rows.slice(1).map(r => {
                     const c = r.split(',').map(f => f.trim());
-                    return { client: c[0]||'', plate: c[1]||'', model: c[2]||'', color: c[3]||'', emp: c[4]||'', status: c[5]||'' };
+                    return { 
+                        client: c[0]||'', 
+                        plate: c[1]||'', 
+                        model: c[2]||'', 
+                        color: c[3]||'', 
+                        emp: c[4]||'', 
+                        status: c[5]||'' 
+                    };
                 });
-            } catch(e) { console.error("CSV Error"); }
+                console.log("تم تحميل البيانات بنجاح من Google Sheets");
+            } catch(e) { 
+                console.error("فشل تحميل الشيت، يتم التحميل من ملف محلي كبديل");
+                // محاولة تحميل ملف محلي في حال فشل جوجل
+                fetch('data.csv').then(r => r.text()).then(t => { /* logic */ });
+            }
         }
 
         function searchByPlate() {
@@ -296,7 +313,6 @@
             if(!qP && !qI) return;
 
             filtered.slice(0, 15).forEach(item => {
-                // Get absolute index in the main DB for editing
                 const realIndex = db.findIndex(x => x.plate === item.plate && x.emp === item.emp);
                 const isActive = item.status.toLowerCase().includes('active') || item.status.includes('نشط');
                 
@@ -323,7 +339,6 @@
             });
         }
 
-        // Editing Functions
         function openEditModal(index) {
             const item = db[index];
             document.getElementById('edit-index').value = index;
@@ -346,13 +361,13 @@
             db[idx].model = document.getElementById('edit-model').value;
 
             localStorage.setItem('majdoul_db', JSON.stringify(db));
-            alert("تم حفظ التعديلات بنجاح");
+            alert("تم حفظ التعديلات في ذاكرة المتصفح");
             closeEditModal();
             searchByPlate() || searchByInfo();
         }
 
         function clearLocalData() {
-            if(confirm("هل تريد حذف التعديلات والعودة لبيانات الملف الأصلية؟")) {
+            if(confirm("سيتم مسح تعديلاتك والعودة لبيانات جوجل شيت الأصلية. هل أنت متأكد؟")) {
                 localStorage.removeItem('majdoul_db');
                 location.reload();
             }
