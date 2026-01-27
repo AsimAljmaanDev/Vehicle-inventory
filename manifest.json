@@ -1,0 +1,22 @@
+{
+  "short_name": "مواقف مجدول",
+  "name": "نظام مواقف برج مجدول",
+  "icons": [
+    {
+      "src": "logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "./",
+  "theme_color": "#0a84ff",
+  "description": "نظام إدارة وحصر مواقف برج مجدول - LinkExpert"
+}
