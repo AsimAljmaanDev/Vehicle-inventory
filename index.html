@@ -2,118 +2,214 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مواقف برج مجدول</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>نظام مواقف برج مجدول</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a84ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="logo-192.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.85); --text-color: #1c1c1e;
+            --accent: #007aff; --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(120, 120, 128, 0.12);
+            --status-active: #34c759; --status-inactive: #ff3b30; --container-width: 500px;
+        }
+
+        body.dark {
+            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.9); --text-color: #ffffff;
+            --accent: #0a84ff; --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(120, 120, 128, 0.24);
+        }
+
+        body.desktop-mode { --container-width: 1000px; }
+
+        body {
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            background-color: var(--bg-color); color: var(--text-color); transition: all 0.3s ease; padding-bottom: 100px;
+            -webkit-tap-highlight-color: transparent; /* تحسين تجربة اللمس في التطبيق */
+        }
+
+        header {
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 10px 20px; border-bottom: 0.5px solid var(--glass-border); position: sticky; top: 0; z-index: 1000;
+        }
+
+        .header-content { max-width: var(--container-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo-majdoul { height: 40px; } .logo-link { height: 30px; }
+
+        .top-actions { display: flex; gap: 12px; }
+        .icon-btn { font-size: 18px; color: var(--accent); cursor: pointer; padding: 10px; border-radius: 50%; background: var(--input-bg); }
+
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 20px; box-sizing: border-box; }
+        
+        .page-section { display: none; width: 100%; animation: slideUp 0.3s ease-out; }
+        .page-section.active { display: block; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .glass-panel { 
+            background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 0.5px solid var(--glass-border); border-radius: 25px; 
+            padding: 25px; margin-bottom: 20px; width: 100%; box-sizing: border-box;
+        }
+
+        input, select { 
+            width: 100%; padding: 15px; border-radius: 12px; border: none; 
+            background: var(--input-bg); color: var(--text-color); 
+            font-size: 16px; margin-bottom: 15px; outline: none; box-sizing: border-box;
+        }
+
+        .car-card { 
+            background: var(--card-bg); border-radius: 20px; padding: 20px; 
+            margin-bottom: 15px; border-right: 8px solid #ccc; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; position: relative; width: 100%; box-sizing: border-box;
+        }
+        .car-card.active-status { border-right-color: var(--status-active); }
+        .car-card.inactive-status { border-right-color: var(--status-inactive); }
+        
+        .edit-icon { position: absolute; top: 15px; left: 15px; color: var(--accent); padding: 10px; }
+
+        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 50px; font-size: 13px; font-weight: bold; margin-top: 10px; }
+        .active-badge { background: rgba(52, 199, 89, 0.2); color: var(--status-active); }
+        .inactive-badge { background: rgba(255, 59, 48, 0.2); color: var(--status-inactive); }
+
+        .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 0.5px solid var(--glass-border); display: flex; padding: 10px 0 25px; z-index: 1000; }
+        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; }
+        .nav-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-tab.active { color: var(--accent); }
+
+        .support-float { position: fixed; bottom: 100px; left: 20px; width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1500; cursor: pointer; }
+        
+        #editModal, #addModal, #supportModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: none; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+    </style>
 </head>
-<body>
-    <div class="blob"></div>
-    <div class="blob"></div>
+<body class="dark">
 
-    <div class="page">
-        <header>
-            <div class="header-logos">
-                <img src="Majdoul.png" alt="Majdoul Tower">
-                <div class="toggle" id="themeToggle" onclick="toggleDark()"></div>
-                <img src="linkexpert.png" alt="Link Expert">
+    <header>
+        <div class="header-content">
+            <img src="majdoul.png" class="logo-majdoul" alt="Majdoul Logo">
+            <div class="top-actions">
+                <i class="fas fa-desktop icon-btn" onclick="document.body.classList.toggle('desktop-mode')"></i>
+                <i class="fas fa-adjust icon-btn" onclick="document.body.classList.toggle('dark')"></i>
             </div>
-            <h1>مواقف برج مجدول</h1>
-        </header>
-
-        <div class="container">
-            <div id="loader" class="glass-loader">
-                <div class="spinner"></div>
-                <p>جاري جلب البيانات من النظام...</p>
-            </div>
-
-            <div class="search-box" id="searchBox" style="display:none; flex-direction: column; gap: 10px;">
-                <input id="plateInput" type="text" placeholder="🔎 البحث برقم اللوحة" autocomplete="off" oninput="filterData()">
-                <input id="employeeInput" type="text" placeholder="👤 البحث باسم الموظف" autocomplete="off" oninput="filterData()">
-            </div>
-
-            <div id="results"></div>
+            <img src="linkexpert.png" class="logo-link" alt="LinkExpert Logo">
         </div>
+    </header>
 
-        <footer>
-            الموقع: برج مجدول <br>
-            الشركة المشغلة للمرافق: <strong>خبير الربط - Link Expert</strong>
-        </footer>
+    <div class="container">
+        <section id="page-search" class="page-section active">
+            <div class="glass-panel">
+                <input type="text" id="plateSearch" placeholder="ابحث برقم اللوحة..." oninput="searchByPlate()">
+                <input type="text" id="infoSearch" placeholder="ابحث بالاسم أو العميل..." oninput="searchByInfo()">
+                <button class="submit-btn" style="background: var(--status-active); margin-top: 10px;" onclick="checkAuth('add')">
+                    <i class="fas fa-plus-circle"></i> إضافة مركبة جديدة
+                </button>
+            </div>
+            <div id="cardsResult"></div>
+        </section>
+
+        <section id="page-inventory" class="page-section">
+            <div class="glass-panel">
+                <h2 style="margin-top:0">📝 تسجيل حصر</h2>
+                <label>المركبة المختارة</label>
+                <input type="text" id="selectedLabel" readonly placeholder="يرجى الاختيار من البحث">
+                <label>الوحدة (Unit)</label>
+                <select id="unitSelect"><option>P1</option><option>P1-VIP</option><option>P2</option><option>P3</option><option>P4</option><option>Landscape</option></select>
+                <label>رقم الموقف</label>
+                <input type="number" id="slotNo" placeholder="أدخل رقم الموقف">
+                <button class="submit-btn" onclick="confirmEntry()">تأكيد وإرسال البيانات</button>
+            </div>
+        </section>
     </div>
 
+    <nav class="bottom-nav">
+        <div class="nav-tab active" onclick="switchPage('page-search', this)"><i class="fas fa-search"></i><span>البحث</span></div>
+        <div class="nav-tab" onclick="switchPage('page-inventory', this)"><i class="fas fa-plus-square"></i><span>التسجيل</span></div>
+    </nav>
+
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCmZCoItc1KTDPP_afzdhC5T-Vz8z6e11iVN9etRXpqj7Ecfm1O5ml0uqWVX7nJPBx/exec";
-        
-        let allData = [];
+        // تفعيل الـ PWA Service Worker للعمل بدون إنترنت
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW error:', err));
+            });
+        }
 
-        async function fetchData() {
+        let db = []; let activeCar = null;
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynq-4N4tP722M_qtJuZ73hMpE_Q3JUj45IDRMUrDkX0kZK2kIA7SNaMD9oQc3e2D0_/exec"; 
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
+
+        async function loadData() {
             try {
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
-                
-                allData = data;
-
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('searchBox').style.display = 'flex';
-                renderResults(allData);
-            } catch (error) {
-                console.error("خطأ في الاتصال بالـ Script:", error);
-                document.getElementById('loader').innerHTML = "<p>فشل جلب البيانات من Google Script. تأكد من إعدادات النشر.</p>";
-            }
+                const res = await fetch(CSV_URL);
+                const text = await res.text();
+                db = text.split('\n').slice(1).map(r => {
+                    const c = r.split(',').map(f => f.trim());
+                    return { client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
+                });
+            } catch(e) { console.error("CSV Load Error"); }
         }
 
-        function renderResults(data) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-
-            if (data.length === 0) {
-                resultsDiv.innerHTML = '<p style="text-align:center; opacity:0.7;">لا توجد نتائج مطابقة</p>';
-                return;
-            }
-
-            data.forEach(item => {
-                const statusStr = String(item.status || item.الحالة || "");
-                
-                // تعديل المنطق هنا ليشمل كلمة Inactive بالإنجليزية وأي حالة تحتوي على "غير"
-                const isInactive = statusStr.toLowerCase().includes('inactive') || statusStr.includes('غير');
-                const isActive = !isInactive;
-
+        function render(filtered) {
+            const container = document.getElementById('cardsResult');
+            container.innerHTML = '';
+            if(!filtered.length) return;
+            filtered.slice(0, 15).forEach(item => {
+                const realIdx = db.findIndex(x => x.plate === item.plate && x.emp === item.emp);
+                const isActive = item.status && (item.status === 'نشط' || item.status === 'Active');
                 const card = document.createElement('div');
-                card.className = 'car-card'; 
-                
+                card.className = `car-card ${isActive ? 'active-status' : 'inactive-status'}`;
                 card.innerHTML = `
-                    <div style="padding: 20px; border-radius: 15px; background: rgba(255,255,255,0.05); margin-bottom: 15px; border-right: 6px solid ${isActive ? '#34c759' : '#ff3b30'};">
-                        <h3 style="margin-top: 0;">اللوحة: ${item.plate || item.اللوحة || "غير معروف"}</h3>
-                        <div style="font-size: 0.9em; opacity: 0.9;">
-                            <p><b>العميل:</b> ${item.client || item.العميل || "-"}</p>
-                            <p><b>الموظف:</b> ${item.emp || item.employee || item.الموظف || "-"}</p>
-                            <p><b>السيارة:</b> ${item.model || item.الموديل || "-"} - ${item.color || item.اللون || "-"}</p>
-                            <p style="color: ${isActive ? '#34c759' : '#ff3b30'}; font-weight: bold;">الحالة: ${statusStr}</p>
-                        </div>
-                    </div>
+                    <i class="fas fa-edit edit-icon" onclick="checkAuth('edit', ${realIdx}); event.stopPropagation();"></i>
+                    <p style="color:var(--accent); font-weight:bold; margin-bottom:5px">العميل: ${item.client}</p>
+                    <h3 style="margin:5px 0">اللوحة: ${item.plate}</h3>
+                    <p>الموديل: ${item.model}</p><p>اللون: ${item.color}</p><p>اسم الموظف: ${item.emp}</p>
+                    <span class="status-badge ${isActive ? 'active-badge' : 'inactive-badge'}">الحالة: ${item.status}</span>
                 `;
-                resultsDiv.appendChild(card);
+                card.onclick = () => { 
+                    activeCar = item; 
+                    document.getElementById('selectedLabel').value = `${item.plate} - ${item.emp}`; 
+                    switchPage('page-inventory', document.querySelectorAll('.nav-tab')[1]); 
+                };
+                container.appendChild(card);
             });
         }
 
-        function filterData() {
-            const plateVal = document.getElementById('plateInput').value.toLowerCase();
-            const empVal = document.getElementById('employeeInput').value.toLowerCase();
-
-            const filtered = allData.filter(item => {
-                const plate = String(item.plate || item.اللوحة || "").toLowerCase();
-                const emp = String(item.emp || item.employee || item.الموظف || "").toLowerCase();
-                return plate.includes(plateVal) && emp.includes(empVal);
-            });
-            renderResults(filtered);
+        function checkAuth(mode, idx) {
+            const p = prompt("يُرجى إدخال كلمة المرور:");
+            if(p !== "0707") return alert("خطأ!");
+            if(mode === 'add') document.getElementById('addModal').style.display = 'block';
+            // منطق التعديل يضاف هنا
         }
 
-        function toggleDark() {
-            document.body.classList.toggle('dark-mode');
-            const btn = document.getElementById('themeToggle');
-            btn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        function post(data) { 
+            fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
+            .then(() => { alert("تمت العملية بنجاح"); location.reload(); }); 
         }
 
-        window.onload = fetchData;
+        function confirmEntry() { 
+            if(!activeCar) return alert("اختر مركبة"); 
+            post({ action: 'log_entry', client: activeCar.client, plate: activeCar.plate, emp: activeCar.emp, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value }); 
+        }
+
+        function searchByPlate() { render(db.filter(i => i.plate.toLowerCase().includes(document.getElementById('plateSearch').value.toLowerCase()))); }
+        function searchByInfo() { render(db.filter(i => i.emp.toLowerCase().includes(document.getElementById('infoSearch').value.toLowerCase()) || i.client.toLowerCase().includes(document.getElementById('infoSearch').value.toLowerCase()))); }
+        
+        function switchPage(id, el) { 
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active')); 
+            document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            el.classList.add('active'); 
+            window.scrollTo(0,0);
+        }
+        
+        loadData();
     </script>
 </body>
 </html>
