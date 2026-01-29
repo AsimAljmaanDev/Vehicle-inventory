@@ -7,123 +7,127 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.7);
+            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.85);
             --text-color: #1c1c1e; --accent: #007aff; 
             --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(0, 0, 0, 0.05);
             --status-active: #34c759; --status-inactive: #ff3b30;
-            --liquid-glow: rgba(0, 122, 255, 0.3); --container-width: 500px;
+            --container-width: 500px;
         }
 
         body.dark {
-            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.85);
+            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.9);
             --text-color: #ffffff; --accent: #0a84ff;
             --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(255, 255, 255, 0.1);
-            --liquid-glow: rgba(10, 132, 255, 0.4);
         }
 
         body {
             margin: 0; background: var(--bg-color); color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            transition: all 0.4s ease; min-height: 100vh; padding-bottom: 120px;
+            transition: 0.4s; min-height: 100vh; padding-bottom: 100px;
         }
 
         header {
-            background: var(--card-bg); backdrop-filter: blur(25px) saturate(180%);
-            border-bottom: 1px solid var(--glass-border); padding: 12px 20px;
+            background: var(--card-bg); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border); padding: 15px 20px;
             position: sticky; top: 0; z-index: 1000;
         }
 
         .header-content { max-width: var(--container-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo-container { display: flex; align-items: center; gap: 10px; }
-        .main-logo { height: 32px; }
+        .logo-container { display: flex; align-items: center; gap: 8px; }
+        .main-logo { height: 30px; }
 
         .top-actions { display: flex; gap: 10px; }
         .icon-btn {
             width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
             border-radius: 50%; border: 1.5px solid var(--accent);
-            background: rgba(10, 132, 255, 0.05); color: var(--accent); cursor: pointer; transition: 0.3s;
+            background: rgba(10, 132, 255, 0.05); color: var(--accent); cursor: pointer;
         }
 
         .container { max-width: var(--container-width); margin: 0 auto; padding: 15px; }
 
         .glass-panel {
-            background: var(--card-bg); backdrop-filter: blur(30px) saturate(180%);
-            border: 1px solid var(--glass-border); border-radius: 28px;
-            padding: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box;
+            background: var(--card-bg); backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border); border-radius: 25px;
+            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box;
         }
 
         input, select {
-            width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--glass-border);
-            background: var(--input-bg); color: var(--text-color); font-size: 16px; margin-bottom: 12px; outline: none;
+            width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--glass-border);
+            background: var(--input-bg); color: var(--text-color); font-size: 16px; margin-bottom: 10px; outline: none;
         }
 
+        /* تنسيق بطاقة السيارة الجديد */
         .car-card {
-            background: var(--card-bg); border-radius: 24px; padding: 20px; margin-bottom: 15px;
-            border: 1px solid var(--glass-border); position: relative; cursor: pointer;
+            background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px;
+            border: 1px solid var(--glass-border); position: relative; transition: 0.3s; cursor: pointer;
         }
+        
+        .client-name { font-size: 18px; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: block; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px; }
+        .plate-number { font-size: 22px; font-weight: 700; margin: 5px 0; letter-spacing: 1px; }
+        .car-details { font-size: 14px; opacity: 0.8; margin-bottom: 5px; }
+        .emp-name { font-size: 14px; font-weight: 600; color: #8e8e93; }
 
-        .active-indicator { border-right: 5px solid var(--status-active); }
-        .inactive-indicator { border-right: 5px solid var(--status-inactive); }
+        .active-indicator { border-right: 6px solid var(--status-active); }
+        .inactive-indicator { border-right: 6px solid var(--status-inactive); }
 
-        .card-actions { position: absolute; left: 15px; bottom: 15px; display: flex; gap: 10px; }
+        .card-actions { position: absolute; left: 12px; bottom: 12px; display: flex; gap: 8px; }
         .action-circle {
-            width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--accent);
-            display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--accent);
+            width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--accent); background: var(--card-bg);
         }
 
         .submit-btn {
-            width: 100%; padding: 18px; background: var(--accent); color: white;
-            border: none; border-radius: 18px; font-size: 16px; font-weight: 600; cursor: pointer;
+            width: 100%; padding: 16px; background: var(--accent); color: white;
+            border: none; border-radius: 15px; font-size: 16px; font-weight: 600; cursor: pointer;
         }
 
-        /* نافذة التعديل المنبثقة */
-        #edit-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
             z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px;
         }
 
         .bottom-nav {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 380px; background: var(--card-bg); backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 40px; display: flex; padding: 6px; z-index: 1000;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px; background: var(--card-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 30px; display: flex; padding: 5px; z-index: 1000;
         }
 
-        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; padding: 12px; border-radius: 35px; }
+        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; padding: 10px; border-radius: 25px; }
         .nav-tab.active { background: var(--accent); color: white; }
 
-        #toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 12px 30px; border-radius: 50px; z-index: 10000; transition: 0.5s; }
+        #toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 10px 25px; border-radius: 50px; z-index: 10000; transition: 0.5s; }
         #login-page { position: fixed; inset: 0; background: var(--bg-color); z-index: 6000; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="dark">
 
-    <div id="toast">تم الحفظ ✓</div>
+    <div id="toast">تمت العملية ✓</div>
 
     <div id="login-page">
         <div class="glass-panel" style="max-width: 320px; text-align: center;">
-            <img src="linkexpert.png" style="height: 50px; margin-bottom: 20px;">
-            <h3>Parking System</h3>
+            <img src="linkexpert.png" style="height: 45px; margin-bottom: 15px;">
+            <h3 style="margin-bottom: 20px;">Link Expert Parking</h3>
             <input type="text" id="user" placeholder="اسم المستخدم">
             <input type="password" id="pass" placeholder="كلمة المرور">
-            <button class="submit-btn" onclick="handleLogin()">دخول</button>
+            <button class="submit-btn" onclick="handleLogin()">دخول النظام</button>
         </div>
     </div>
 
-    <div id="edit-modal">
+    <div id="data-modal" class="modal">
         <div class="glass-panel" style="max-width: 400px;">
-            <h3 style="margin-top:0">🛠️ تعديل بيانات المركبة</h3>
-            <input type="hidden" id="edit-index">
-            <label style="font-size:12px">اسم العميل</label>
-            <input type="text" id="edit-client">
-            <label style="font-size:12px">اسم الموظف</label>
-            <input type="text" id="edit-emp">
-            <label style="font-size:12px">الحالة</label>
-            <select id="edit-status">
+            <h3 id="modal-title" style="margin-top:0">إضافة مركبة جديدة</h3>
+            <input type="hidden" id="entry-row">
+            <input type="text" id="field-client" placeholder="اسم العميل (ضروري)">
+            <input type="text" id="field-plate" placeholder="رقم اللوحة">
+            <input type="text" id="field-model" placeholder="الموديل">
+            <input type="text" id="field-color" placeholder="اللون">
+            <input type="text" id="field-emp" placeholder="اسم الموظف">
+            <select id="field-status">
                 <option value="نشط">نشط</option>
                 <option value="غير نشط">غير نشط</option>
             </select>
-            <button class="submit-btn" onclick="saveEdit()">تحديث البيانات</button>
-            <button class="submit-btn" style="background:transparent; color:var(--text-color); margin-top:10px" onclick="closeEdit()">إلغاء</button>
+            <button class="submit-btn" onclick="saveData()">حفظ البيانات</button>
+            <button class="submit-btn" style="background:transparent; color:var(--text-color); margin-top:8px" onclick="closeModal()">إلغاء</button>
         </div>
     </div>
 
@@ -131,20 +135,20 @@
         <div class="header-content">
             <div class="logo-container">
                 <img src="linkexpert.png" class="main-logo">
-                <span style="font-weight: 700;">LINK EXPERT</span>
+                <span style="font-weight: 700; font-size: 14px;">LINK EXPERT</span>
             </div>
             <div class="top-actions">
                 <div class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-adjust"></i></div>
-                <div class="icon-btn" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></div>
+                <div class="icon-btn" onclick="location.reload()"><i class="fas fa-sync"></i></div>
             </div>
         </div>
     </header>
 
     <div class="container">
         <section id="page-search">
-            <div class="glass-panel" style="margin-bottom: 20px;">
-                <input type="text" id="plateSearch" placeholder="🔢 ابحث برقم اللوحة..." onkeyup="executeCombinedSearch()">
-                <div id="searchCounter" style="font-size: 11px; opacity: 0.5; text-align: center;">جاري المزامنة...</div>
+            <div class="glass-panel" style="margin-bottom: 15px;">
+                <input type="text" id="mainSearch" placeholder="🔍 ابحث باللوحة، العميل، أو الموظف..." onkeyup="filterData()">
+                <button class="submit-btn" style="background: var(--status-active); font-size: 14px;" onclick="openAdd()">+ إضافة مركبة جديدة</button>
             </div>
             <div id="cardsResult"></div>
         </section>
@@ -152,10 +156,10 @@
         <section id="page-inventory" style="display: none;">
             <div class="glass-panel">
                 <h3>📝 تسجيل حصر</h3>
-                <input type="text" id="selectedLabel" readonly>
+                <input type="text" id="selectedLabel" readonly placeholder="اختر مركبة من البحث">
                 <select id="unitSelect"><option>P1</option><option>P2</option><option>P3</option><option>P4</option></select>
                 <input type="number" id="slotNo" placeholder="رقم الموقف">
-                <button class="submit-btn" onclick="confirmEntry(event)">تأكيد الحصر</button>
+                <button class="submit-btn" onclick="confirmInventory(event)">تأكيد ورفع</button>
             </div>
         </section>
     </div>
@@ -170,84 +174,112 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
-        function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.top = '30px'; setTimeout(() => t.style.top = '-100px', 3000); }
+        function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.top = '25px'; setTimeout(() => t.style.top = '-100px', 3000); }
 
         function handleLogin() {
             const u = document.getElementById('user').value, p = document.getElementById('pass').value;
             if((u === "abdullah@awtad" && p === "3344") || (u === "asim@link" && p === "0707")) {
                 document.getElementById('login-page').style.display = 'none'; loadData();
-            } else alert("خطأ");
+            } else alert("خطأ في البيانات");
         }
 
         async function loadData() {
             try {
                 const res = await fetch(CSV_URL); const text = await res.text();
                 const rows = text.split('\n').filter(r => r.trim() !== '');
-                db = rows.slice(1).map((r, index) => {
+                db = rows.slice(1).map((r, i) => {
                     const c = r.split(',').map(f => f.trim());
-                    return { index: index + 2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
+                    return { row: i + 2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
                 });
                 render(db);
-                document.getElementById('searchCounter').innerText = `المركبات: ${db.length}`;
-            } catch(e) { showToast("فشل التحميل"); }
+            } catch(e) { showToast("خطأ في الاتصال"); }
         }
 
         function render(data) {
             const res = document.getElementById('cardsResult'); res.innerHTML = '';
-            data.slice(0, 15).forEach(i => {
-                const active = i.status === 'نشط';
+            data.forEach(i => {
                 const card = document.createElement('div');
-                card.className = `car-card ${active ? 'active-indicator' : 'inactive-indicator'}`;
+                card.className = `car-card ${i.status === 'نشط' ? 'active-indicator' : 'inactive-indicator'}`;
                 card.innerHTML = `
-                    <div style="font-size:10px; opacity:0.5;">${i.client}</div>
-                    <div style="font-size:22px; font-weight:800; color:var(--accent);">${i.plate}</div>
-                    <div style="font-size:13px;">${i.emp}</div>
+                    <span class="client-name">${i.client || 'عميل غير مسجل'}</span>
+                    <div class="plate-number">${i.plate}</div>
+                    <div class="car-details">${i.model} - ${i.color}</div>
+                    <div class="emp-name"><i class="fas fa-user-badge"></i> ${i.emp}</div>
                     <div class="card-actions">
-                        <div class="action-circle" onclick="openEdit(${i.index}, '${i.client}', '${i.emp}', '${i.status}', event)"><i class="fas fa-pen"></i></div>
+                        <div class="action-circle" onclick="openEdit(${JSON.stringify(i).replace(/"/g, '&quot;')}, event)"><i class="fas fa-pen"></i></div>
                         <div class="action-circle" onclick="shareData('${i.plate}', '${i.emp}', event)"><i class="fas fa-share-alt"></i></div>
                     </div>
                 `;
                 card.onclick = () => {
-                    document.getElementById('selectedLabel').value = i.plate;
+                    document.getElementById('selectedLabel').value = i.plate + " - " + i.client;
                     switchTab('page-inventory', document.querySelectorAll('.nav-tab')[1]);
                 };
                 res.appendChild(card);
             });
         }
 
-        function openEdit(index, client, emp, status, e) {
+        function filterData() {
+            const val = document.getElementById('mainSearch').value.toLowerCase();
+            render(db.filter(i => i.plate.toLowerCase().includes(val) || i.client.toLowerCase().includes(val) || i.emp.toLowerCase().includes(val)));
+        }
+
+        function openAdd() {
+            document.getElementById('modal-title').innerText = "إضافة مركبة جديدة";
+            document.getElementById('entry-row').value = "";
+            document.getElementById('field-client').value = "";
+            document.getElementById('field-plate').value = "";
+            document.getElementById('data-modal').style.display = 'flex';
+        }
+
+        function openEdit(item, e) {
             e.stopPropagation();
-            document.getElementById('edit-index').value = index;
-            document.getElementById('edit-client').value = client;
-            document.getElementById('edit-emp').value = emp;
-            document.getElementById('edit-status').value = status;
-            document.getElementById('edit-modal').style.display = 'flex';
+            document.getElementById('modal-title').innerText = "تعديل البيانات";
+            document.getElementById('entry-row').value = item.row;
+            document.getElementById('field-client').value = item.client;
+            document.getElementById('field-plate').value = item.plate;
+            document.getElementById('field-model').value = item.model;
+            document.getElementById('field-color').value = item.color;
+            document.getElementById('field-emp').value = item.emp;
+            document.getElementById('field-status').value = item.status;
+            document.getElementById('data-modal').style.display = 'flex';
         }
 
-        function closeEdit() { document.getElementById('edit-modal').style.display = 'none'; }
+        function closeModal() { document.getElementById('data-modal').style.display = 'none'; }
 
-        function saveEdit() {
+        async function saveData() {
+            const row = document.getElementById('entry-row').value;
             const data = {
-                action: 'edit_car',
-                row: document.getElementById('edit-index').value,
-                client: document.getElementById('edit-client').value,
-                emp: document.getElementById('edit-emp').value,
-                status: document.getElementById('edit-status').value
+                action: row ? 'edit_car' : 'add_car',
+                row: row,
+                client: document.getElementById('field-client').value,
+                plate: document.getElementById('field-plate').value,
+                model: document.getElementById('field-model').value,
+                color: document.getElementById('field-color').value,
+                emp: document.getElementById('field-emp').value,
+                status: document.getElementById('field-status').value
             };
-            showToast("جاري التحديث...");
-            fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
-            .then(() => { showToast("تم التحديث ✓"); setTimeout(() => location.reload(), 1000); });
+            showToast("جاري الحفظ...");
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+            showToast("تم الحفظ بنجاح ✓");
+            closeModal();
+            setTimeout(() => location.reload(), 1000);
         }
 
-        function confirmEntry(event) {
-            const data = { action: 'log_entry', plate: document.getElementById('selectedLabel').value, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value };
-            fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
-            .then(() => { showToast("تم الحصر ✓"); switchTab('page-search', document.querySelectorAll('.nav-tab')[0]); });
+        async function confirmInventory(e) {
+            const plate = document.getElementById('selectedLabel').value;
+            if(!plate) return alert("اختر مركبة");
+            const data = { action: 'log_entry', plate: plate, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value };
+            showToast("جاري الرفع...");
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+            showToast("تم الحصر ✓");
+            setTimeout(() => location.reload(), 1000);
         }
 
-        function executeCombinedSearch() {
-            const val = document.getElementById('plateSearch').value.toLowerCase();
-            render(db.filter(i => i.plate.toLowerCase().includes(val) || i.emp.toLowerCase().includes(val)));
+        function shareData(plate, emp, e) {
+            e.stopPropagation();
+            const txt = `نظام Link Expert:\nاللوحة: ${plate}\nالموظف: ${emp}`;
+            if (navigator.share) navigator.share({ title: 'Parking', text: txt });
+            else window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
         }
 
         function switchTab(id, el) {
