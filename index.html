@@ -7,127 +7,114 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.85);
+            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.9);
             --text-color: #1c1c1e; --accent: #007aff; 
-            --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(255, 255, 255, 0.8);
             --status-active: #34c759; --status-inactive: #ff3b30;
-            --container-width: 500px;
+            --main-width: 95%; --max-width: 500px;
         }
 
         body.dark {
-            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.9);
+            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.95);
             --text-color: #ffffff; --accent: #0a84ff;
-            --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(44, 44, 46, 0.8);
+        }
+
+        /* إصلاح وضع سطح المكتب */
+        body.desktop-mode { --max-width: 1200px; }
+        body.desktop-mode #cardsResult {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
 
         body {
             margin: 0; background: var(--bg-color); color: var(--text-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            transition: 0.4s; min-height: 100vh; padding-bottom: 100px;
+            font-family: -apple-system, system-ui, sans-serif;
+            transition: 0.3s; min-height: 100vh; padding-bottom: 100px;
         }
 
         header {
             background: var(--card-bg); backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border); padding: 15px 20px;
+            border-bottom: 1px solid var(--glass-border); padding: 10px 20px;
             position: sticky; top: 0; z-index: 1000;
         }
 
-        .header-content { max-width: var(--container-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-        .logo-container { display: flex; align-items: center; gap: 8px; }
-        .main-logo { height: 30px; }
+        .header-content { max-width: var(--max-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; transition: 0.5s; }
+        .logo-container { display: flex; align-items: center; gap: 10px; }
+        .main-logo { height: 35px; }
 
-        .top-actions { display: flex; gap: 10px; }
+        .top-actions { display: flex; gap: 8px; }
         .icon-btn {
-            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
             border-radius: 50%; border: 1.5px solid var(--accent);
-            background: rgba(10, 132, 255, 0.05); color: var(--accent); cursor: pointer;
+            background: transparent; color: var(--accent); cursor: pointer; transition: 0.3s;
         }
+        .icon-btn.active-mode { background: var(--accent); color: white; }
 
-        .container { max-width: var(--container-width); margin: 0 auto; padding: 15px; }
+        .container { width: var(--main-width); max-width: var(--max-width); margin: 0 auto; padding-top: 20px; transition: 0.5s; }
 
         .glass-panel {
-            background: var(--card-bg); backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border); border-radius: 25px;
-            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box;
+            background: var(--card-bg); border-radius: 20px;
+            padding: 20px; border: 1px solid var(--glass-border); margin-bottom: 20px;
         }
 
         input, select {
-            width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--glass-border);
-            background: var(--input-bg); color: var(--text-color); font-size: 16px; margin-bottom: 10px; outline: none;
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border);
+            background: var(--input-bg); color: var(--text-color); font-size: 16px; margin-bottom: 10px; box-sizing: border-box;
         }
 
-        /* تنسيق بطاقة السيارة الجديد */
+        /* إصلاح مقاسات الصناديق */
         .car-card {
-            background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px;
-            border: 1px solid var(--glass-border); position: relative; transition: 0.3s; cursor: pointer;
+            background: var(--card-bg); border-radius: 18px; padding: 20px; margin-bottom: 15px;
+            border: 1px solid var(--glass-border); position: relative;
+            box-sizing: border-box; transition: 0.3s; display: flex; flex-direction: column;
         }
         
-        .client-name { font-size: 18px; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: block; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px; }
-        .plate-number { font-size: 22px; font-weight: 700; margin: 5px 0; letter-spacing: 1px; }
-        .car-details { font-size: 14px; opacity: 0.8; margin-bottom: 5px; }
-        .emp-name { font-size: 14px; font-weight: 600; color: #8e8e93; }
+        .active-indicator { border-left: 6px solid var(--status-active); }
+        .inactive-indicator { border-left: 6px solid var(--status-inactive); }
 
-        .active-indicator { border-right: 6px solid var(--status-active); }
-        .inactive-indicator { border-right: 6px solid var(--status-inactive); }
+        .client-header { font-size: 18px; font-weight: 800; color: var(--accent); margin-bottom: 10px; border-bottom: 1px solid var(--glass-border); padding-bottom: 8px; }
+        .plate-row { font-size: 24px; font-weight: 900; margin-bottom: 5px; }
+        .info-row { font-size: 14px; opacity: 0.8; margin: 2px 0; }
+        .emp-badge { font-size: 13px; font-weight: 600; margin-top: 10px; display: flex; align-items: center; gap: 5px; color: #8e8e93; }
 
-        .card-actions { position: absolute; left: 12px; bottom: 12px; display: flex; gap: 8px; }
+        .card-actions { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
         .action-circle {
-            width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--accent);
-            display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--accent); background: var(--card-bg);
+            width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--accent);
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+            color: var(--accent); background: var(--card-bg); cursor: pointer;
         }
 
         .submit-btn {
-            width: 100%; padding: 16px; background: var(--accent); color: white;
-            border: none; border-radius: 15px; font-size: 16px; font-weight: 600; cursor: pointer;
-        }
-
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-            z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px;
+            width: 100%; padding: 18px; background: var(--accent); color: white;
+            border: none; border-radius: 15px; font-size: 17px; font-weight: 700; cursor: pointer;
         }
 
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; background: var(--card-bg); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 30px; display: flex; padding: 5px; z-index: 1000;
+            width: 90%; max-width: 400px; background: var(--card-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); border-radius: 50px; display: flex; padding: 6px; z-index: 1000;
         }
 
-        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; padding: 10px; border-radius: 25px; }
+        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; padding: 12px; border-radius: 40px; transition: 0.3s; }
         .nav-tab.active { background: var(--accent); color: white; }
 
-        #toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--accent); color: white; padding: 10px 25px; border-radius: 50px; z-index: 10000; transition: 0.5s; }
-        #login-page { position: fixed; inset: 0; background: var(--bg-color); z-index: 6000; display: flex; align-items: center; justify-content: center; }
+        #login-page { position: fixed; inset: 0; background: var(--bg-color); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        
+        /* Modal */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
     </style>
 </head>
 <body class="dark">
 
-    <div id="toast">تمت العملية ✓</div>
-
     <div id="login-page">
-        <div class="glass-panel" style="max-width: 320px; text-align: center;">
-            <img src="linkexpert.png" style="height: 45px; margin-bottom: 15px;">
-            <h3 style="margin-bottom: 20px;">Link Expert Parking</h3>
-            <input type="text" id="user" placeholder="اسم المستخدم">
-            <input type="password" id="pass" placeholder="كلمة المرور">
-            <button class="submit-btn" onclick="handleLogin()">دخول النظام</button>
-        </div>
-    </div>
-
-    <div id="data-modal" class="modal">
-        <div class="glass-panel" style="max-width: 400px;">
-            <h3 id="modal-title" style="margin-top:0">إضافة مركبة جديدة</h3>
-            <input type="hidden" id="entry-row">
-            <input type="text" id="field-client" placeholder="اسم العميل (ضروري)">
-            <input type="text" id="field-plate" placeholder="رقم اللوحة">
-            <input type="text" id="field-model" placeholder="الموديل">
-            <input type="text" id="field-color" placeholder="اللون">
-            <input type="text" id="field-emp" placeholder="اسم الموظف">
-            <select id="field-status">
-                <option value="نشط">نشط</option>
-                <option value="غير نشط">غير نشط</option>
-            </select>
-            <button class="submit-btn" onclick="saveData()">حفظ البيانات</button>
-            <button class="submit-btn" style="background:transparent; color:var(--text-color); margin-top:8px" onclick="closeModal()">إلغاء</button>
+        <div class="glass-panel" style="max-width: 350px; text-align: center;">
+            <img src="linkexpert.png" style="height: 50px; margin-bottom: 15px;">
+            <h2 style="margin-bottom: 25px;">Parking Management</h2>
+            <input type="text" id="user" placeholder="Identity">
+            <input type="password" id="pass" placeholder="Security Key">
+            <button class="submit-btn" onclick="handleLogin()">Unlock Access</button>
         </div>
     </div>
 
@@ -135,33 +122,49 @@
         <div class="header-content">
             <div class="logo-container">
                 <img src="linkexpert.png" class="main-logo">
-                <span style="font-weight: 700; font-size: 14px;">LINK EXPERT</span>
+                <span style="font-weight: 800; font-size: 14px; letter-spacing: 1px;">LINK EXPERT</span>
             </div>
             <div class="top-actions">
+                <div class="icon-btn" id="desktopBtn" onclick="toggleDesktopMode()" title="وضع سطح المكتب"><i class="fas fa-desktop"></i></div>
                 <div class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-adjust"></i></div>
-                <div class="icon-btn" onclick="location.reload()"><i class="fas fa-sync"></i></div>
+                <div class="icon-btn" onclick="location.reload()" style="border-color:#8e8e93; color:#8e8e93;"><i class="fas fa-sync-alt"></i></div>
             </div>
         </div>
     </header>
 
     <div class="container">
         <section id="page-search">
-            <div class="glass-panel" style="margin-bottom: 15px;">
+            <div class="glass-panel">
                 <input type="text" id="mainSearch" placeholder="🔍 ابحث باللوحة، العميل، أو الموظف..." onkeyup="filterData()">
-                <button class="submit-btn" style="background: var(--status-active); font-size: 14px;" onclick="openAdd()">+ إضافة مركبة جديدة</button>
+                <button class="submit-btn" style="background: var(--status-active); font-size: 15px;" onclick="openAdd()">+ إضافة مركبة جديدة</button>
             </div>
             <div id="cardsResult"></div>
         </section>
 
         <section id="page-inventory" style="display: none;">
             <div class="glass-panel">
-                <h3>📝 تسجيل حصر</h3>
-                <input type="text" id="selectedLabel" readonly placeholder="اختر مركبة من البحث">
-                <select id="unitSelect"><option>P1</option><option>P2</option><option>P3</option><option>P4</option></select>
+                <h3 style="margin-top:0">📝 تسجيل حصر المواقف</h3>
+                <input type="text" id="selectedLabel" readonly placeholder="يرجى اختيار مركبة أولاً">
+                <select id="unitSelect"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>VIP</option></select>
                 <input type="number" id="slotNo" placeholder="رقم الموقف">
-                <button class="submit-btn" onclick="confirmInventory(event)">تأكيد ورفع</button>
+                <button class="submit-btn" onclick="confirmInventory(event)">تأكيد ورفع البيانات</button>
             </div>
         </section>
+    </div>
+
+    <div id="data-modal" class="modal">
+        <div class="glass-panel" style="max-width: 450px; width: 100%;">
+            <h3 id="modal-title" style="margin-top:0">إضافة بيانات</h3>
+            <input type="hidden" id="entry-row">
+            <input type="text" id="f-client" placeholder="اسم العميل">
+            <input type="text" id="f-plate" placeholder="رقم اللوحة">
+            <input type="text" id="f-model" placeholder="الموديل">
+            <input type="text" id="f-color" placeholder="اللون">
+            <input type="text" id="f-emp" placeholder="اسم الموظف">
+            <select id="f-status"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
+            <button class="submit-btn" onclick="saveData()">حفظ التغييرات</button>
+            <button class="submit-btn" style="background:transparent; color:var(--text-color); margin-top:10px;" onclick="closeModal()">إغلاق</button>
+        </div>
     </div>
 
     <nav class="bottom-nav">
@@ -174,13 +177,11 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
-        function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.top = '25px'; setTimeout(() => t.style.top = '-100px', 3000); }
-
         function handleLogin() {
             const u = document.getElementById('user').value, p = document.getElementById('pass').value;
             if((u === "abdullah@awtad" && p === "3344") || (u === "asim@link" && p === "0707")) {
                 document.getElementById('login-page').style.display = 'none'; loadData();
-            } else alert("خطأ في البيانات");
+            } else alert("Access Denied");
         }
 
         async function loadData() {
@@ -192,7 +193,7 @@
                     return { row: i + 2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
                 });
                 render(db);
-            } catch(e) { showToast("خطأ في الاتصال"); }
+            } catch(e) { alert("خطأ في المزامنة"); }
         }
 
         function render(data) {
@@ -201,21 +202,26 @@
                 const card = document.createElement('div');
                 card.className = `car-card ${i.status === 'نشط' ? 'active-indicator' : 'inactive-indicator'}`;
                 card.innerHTML = `
-                    <span class="client-name">${i.client || 'عميل غير مسجل'}</span>
-                    <div class="plate-number">${i.plate}</div>
-                    <div class="car-details">${i.model} - ${i.color}</div>
-                    <div class="emp-name"><i class="fas fa-user-badge"></i> ${i.emp}</div>
+                    <div class="client-header">${i.client || 'عميل عام'}</div>
+                    <div class="plate-row">${i.plate}</div>
+                    <div class="info-row">${i.model} • ${i.color}</div>
+                    <div class="emp-badge"><i class="fas fa-user-circle"></i> ${i.emp}</div>
                     <div class="card-actions">
                         <div class="action-circle" onclick="openEdit(${JSON.stringify(i).replace(/"/g, '&quot;')}, event)"><i class="fas fa-pen"></i></div>
                         <div class="action-circle" onclick="shareData('${i.plate}', '${i.emp}', event)"><i class="fas fa-share-alt"></i></div>
                     </div>
                 `;
                 card.onclick = () => {
-                    document.getElementById('selectedLabel').value = i.plate + " - " + i.client;
+                    document.getElementById('selectedLabel').value = i.plate + " (" + i.client + ")";
                     switchTab('page-inventory', document.querySelectorAll('.nav-tab')[1]);
                 };
                 res.appendChild(card);
             });
+        }
+
+        function toggleDesktopMode() {
+            document.body.classList.toggle('desktop-mode');
+            document.getElementById('desktopBtn').classList.toggle('active-mode');
         }
 
         function filterData() {
@@ -224,23 +230,22 @@
         }
 
         function openAdd() {
-            document.getElementById('modal-title').innerText = "إضافة مركبة جديدة";
+            document.getElementById('modal-title').innerText = "إضافة مركبة";
             document.getElementById('entry-row').value = "";
-            document.getElementById('field-client').value = "";
-            document.getElementById('field-plate').value = "";
+            document.querySelectorAll('#data-modal input').forEach(i => i.value = "");
             document.getElementById('data-modal').style.display = 'flex';
         }
 
         function openEdit(item, e) {
             e.stopPropagation();
-            document.getElementById('modal-title').innerText = "تعديل البيانات";
+            document.getElementById('modal-title').innerText = "تعديل بيانات";
             document.getElementById('entry-row').value = item.row;
-            document.getElementById('field-client').value = item.client;
-            document.getElementById('field-plate').value = item.plate;
-            document.getElementById('field-model').value = item.model;
-            document.getElementById('field-color').value = item.color;
-            document.getElementById('field-emp').value = item.emp;
-            document.getElementById('field-status').value = item.status;
+            document.getElementById('f-client').value = item.client;
+            document.getElementById('f-plate').value = item.plate;
+            document.getElementById('f-model').value = item.model;
+            document.getElementById('f-color').value = item.color;
+            document.getElementById('f-emp').value = item.emp;
+            document.getElementById('f-status').value = item.status;
             document.getElementById('data-modal').style.display = 'flex';
         }
 
@@ -251,34 +256,28 @@
             const data = {
                 action: row ? 'edit_car' : 'add_car',
                 row: row,
-                client: document.getElementById('field-client').value,
-                plate: document.getElementById('field-plate').value,
-                model: document.getElementById('field-model').value,
-                color: document.getElementById('field-color').value,
-                emp: document.getElementById('field-emp').value,
-                status: document.getElementById('field-status').value
+                client: document.getElementById('f-client').value,
+                plate: document.getElementById('f-plate').value,
+                model: document.getElementById('f-model').value,
+                color: document.getElementById('f-color').value,
+                emp: document.getElementById('f-emp').value,
+                status: document.getElementById('f-status').value
             };
-            showToast("جاري الحفظ...");
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            showToast("تم الحفظ بنجاح ✓");
-            closeModal();
-            setTimeout(() => location.reload(), 1000);
+            alert("تم الحفظ!"); location.reload();
         }
 
         async function confirmInventory(e) {
             const plate = document.getElementById('selectedLabel').value;
-            if(!plate) return alert("اختر مركبة");
             const data = { action: 'log_entry', plate: plate, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value };
-            showToast("جاري الرفع...");
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            showToast("تم الحصر ✓");
-            setTimeout(() => location.reload(), 1000);
+            alert("تم رفع الحصر!"); switchTab('page-search', document.querySelectorAll('.nav-tab')[0]);
         }
 
         function shareData(plate, emp, e) {
             e.stopPropagation();
-            const txt = `نظام Link Expert:\nاللوحة: ${plate}\nالموظف: ${emp}`;
-            if (navigator.share) navigator.share({ title: 'Parking', text: txt });
+            const txt = `Link Expert System:\nPlate: ${plate}\nUser: ${emp}`;
+            if (navigator.share) navigator.share({ text: txt });
             else window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
         }
 
