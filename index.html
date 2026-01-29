@@ -3,284 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Link Expert | Pro Parking</title>
+    <title>Link Expert | Professional Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f2f2f7; --card-bg: #ffffff;
-            --text-color: #1c1c1e; --accent: #007aff; 
-            --glass-border: rgba(0, 0, 0, 0.08); --input-bg: #ffffff;
-            --status-active: #34c759; --status-inactive: #ff3b30;
-            --max-width: 500px;
+            --bg: #f0f2f5; --panel: #ffffff; --text: #1c1c1e;
+            --accent: #007aff; --safe: #34c759; --danger: #ff3b30;
+            --border: rgba(0,0,0,0.1); --max-w: 500px;
         }
 
         body.dark {
-            --bg-color: #000000; --card-bg: #1c1c1e;
-            --text-color: #ffffff; --accent: #0a84ff;
-            --glass-border: rgba(255, 255, 255, 0.1); --input-bg: #2c2c2e;
+            --bg: #000000; --panel: #1c1c1e; --text: #ffffff;
+            --border: rgba(255,255,255,0.1);
         }
 
-        body.desktop-mode { --max-width: 1200px; }
-        body.desktop-mode #cardsResult {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px;
+        body.desktop { --max-w: 1200px; }
+
+        body { 
+            margin: 0; background: var(--bg); color: var(--text); 
+            font-family: 'Segoe UI', Roboto, sans-serif; transition: 0.3s;
+            padding-bottom: 100px;
         }
 
-        body { margin: 0; background: var(--bg-color); color: var(--text-color); font-family: -apple-system, system-ui, sans-serif; transition: 0.3s; padding-bottom: 120px; }
-
-        /* ترتيب الهيدر الجديد */
-        header { 
-            background: var(--card-bg); backdrop-filter: blur(20px); 
-            border-bottom: 1px solid var(--glass-border); padding: 12px 20px; 
-            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        /* الهيدر المنظم */
+        header {
+            background: var(--panel); border-bottom: 1px solid var(--border);
+            padding: 10px 20px; position: sticky; top: 0; z-index: 1000;
         }
-        .header-content { max-width: var(--max-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-container { 
+            max-width: var(--max-w); margin: 0 auto; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; color: var(--accent); }
+        .controls { display: flex; gap: 8px; }
+
+        .btn-circle {
+            width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border);
+            background: var(--panel); color: var(--text); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .btn-circle.active { background: var(--accent); color: #fff; }
+
+        .container { width: 95%; max-width: var(--max-w); margin: 20px auto; }
+
+        /* تصميم البطاقة الجديد */
+        .car-card {
+            background: var(--panel); border-radius: 20px; padding: 20px; margin-bottom: 20px;
+            border: 1px solid var(--border); position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .active-side { border-right: 8px solid var(--safe); }
+        .inactive-side { border-right: 8px solid var(--danger); }
+
+        .c-name { font-size: 22px; font-weight: 800; color: var(--accent); display: block; margin-bottom: 5px; }
+        .c-plate { font-size: 28px; font-weight: 900; letter-spacing: 2px; margin: 10px 0; }
+        .c-info { font-size: 16px; opacity: 0.8; line-height: 1.6; }
+        .c-emp { margin-top: 15px; font-weight: 600; font-size: 14px; background: rgba(0,0,0,0.05); padding: 5px 12px; border-radius: 20px; display: inline-block; }
+
+        .actions { position: absolute; left: 15px; top: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .act-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--panel); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        /* المدخلات */
+        input, select { 
+            width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; 
+            border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 16px; box-sizing: border-box;
+        }
+        .main-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; background: var(--accent); color: #fff; font-size: 18px; font-weight: 700; cursor: pointer; }
+
+        /* نافذة الإضافة/التعديل */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
         
-        .logo-area { display: flex; align-items: center; gap: 12px; }
-        .logo-img { height: 38px; }
-        .logo-text { font-weight: 800; font-size: 16px; letter-spacing: 0.5px; display: block; }
-
-        .top-actions { display: flex; align-items: center; gap: 8px; } /* ترتيب الأزرار بجانب بعضها */
-        
-        .icon-btn {
-            width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
-            border-radius: 12px; border: 1px solid var(--glass-border);
-            background: var(--input-bg); color: var(--text-color); cursor: pointer; transition: 0.2s;
-            font-size: 16px;
+        .bottom-bar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px; background: var(--panel); border: 1px solid var(--border);
+            border-radius: 50px; display: flex; padding: 5px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
-        .icon-btn:active { transform: scale(0.9); }
-        .icon-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .tab { flex: 1; padding: 12px; text-align: center; border-radius: 40px; color: #8e8e93; cursor: pointer; font-size: 20px; }
+        .tab.active { background: var(--accent); color: #fff; }
 
-        .container { width: 92%; max-width: var(--max-width); margin: 0 auto; padding-top: 25px; }
-
-        /* تنسيق البطاقة الواضح والمريح */
-        .car-card { 
-            background: var(--card-bg); border-radius: 24px; padding: 22px; margin-bottom: 20px; 
-            border: 1px solid var(--glass-border); position: relative; box-sizing: border-box; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04); transition: 0.3s;
-        }
-        .active-indicator { border-right: 10px solid var(--status-active); }
-        .inactive-indicator { border-right: 10px solid var(--status-inactive); }
-
-        .client-header { font-size: 20px; font-weight: 800; color: var(--accent); margin-bottom: 12px; display: block; }
-        .plate-row { font-size: 28px; font-weight: 900; letter-spacing: 2px; margin-bottom: 8px; }
-        .info-row { font-size: 16px; opacity: 0.9; margin: 4px 0; color: var(--text-color); }
-        .emp-badge { 
-            background: rgba(142, 142, 147, 0.1); padding: 6px 12px; border-radius: 8px;
-            font-size: 14px; font-weight: 600; margin-top: 15px; display: inline-flex; align-items: center; gap: 6px;
-        }
-
-        .card-actions { position: absolute; left: 15px; top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .action-circle { 
-            width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--glass-border); 
-            display: flex; align-items: center; justify-content: center; font-size: 16px; 
-            color: var(--text-color); background: var(--input-bg); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .action-circle.del { color: var(--status-inactive); }
-
-        .submit-btn { width: 100%; padding: 18px; background: var(--accent); color: white; border: none; border-radius: 18px; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(0,122,255,0.3); }
-
-        .bottom-nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 380px; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 40px; display: flex; padding: 6px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; padding: 14px; border-radius: 35px; font-size: 18px; }
-        .nav-tab.active { background: var(--accent); color: white; }
-
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
-        #login-page { position: fixed; inset: 0; background: var(--bg-color); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        
-        input { border: 2px solid var(--glass-border) !important; font-size: 18px !important; }
+        #login { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="dark">
 
-    <div id="login-page">
-        <div class="glass-panel" style="max-width: 350px; text-align: center; padding: 40px;">
-            <img src="linkexpert.png" style="height: 60px; margin-bottom: 30px;">
-            <input type="text" id="user" placeholder="User Name">
-            <input type="password" id="pass" placeholder="Password">
-            <button class="submit-btn" onclick="handleLogin()">تسجيل الدخول</button>
+    <div id="login">
+        <div style="background:var(--panel); padding:40px; border-radius:25px; text-align:center; width:80%; max-width:320px; border:1px solid var(--border);">
+            <img src="linkexpert.png" style="height:50px; margin-bottom:20px;">
+            <input type="text" id="u" placeholder="Identity">
+            <input type="password" id="p" placeholder="Key">
+            <button class="main-btn" onclick="auth()">دخول</button>
         </div>
     </div>
 
     <header>
-        <div class="header-content">
-            <div class="logo-area">
-                <img src="linkexpert.png" class="logo-img">
-                <span class="logo-text">LINK EXPERT</span>
-            </div>
-            <div class="top-actions">
-                <div class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="ليلي/نهاري"><i class="fas fa-moon"></i></div>
-                <div class="icon-btn" id="desktopBtn" onclick="toggleDesktop()" title="وضع الكمبيوتر"><i class="fas fa-desktop"></i></div>
-                <div class="icon-btn" onclick="location.reload()" title="تحديث"><i class="fas fa-sync-alt"></i></div>
+        <div class="nav-container">
+            <div class="brand"><img src="linkexpert.png" height="30"> LINK EXPERT</div>
+            <div class="controls">
+                <button class="btn-circle" onclick="toggleMode('dark')"><i class="fas fa-moon"></i></button>
+                <button class="btn-circle" id="dBtn" onclick="toggleMode('desktop')"><i class="fas fa-desktop"></i></button>
+                <button class="btn-circle" onclick="location.reload()"><i class="fas fa-sync"></i></button>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <section id="page-search">
-            <div style="background: var(--card-bg); padding: 20px; border-radius: 25px; margin-bottom: 25px; border: 1px solid var(--glass-border);">
-                <input type="text" id="mainSearch" placeholder="🔍 ابحث هنا..." onkeyup="filterData()" style="width:100%; padding:18px; border-radius:15px; margin-bottom:15px;">
-                <button class="submit-btn" style="background: var(--status-active);" onclick="secureAction(openAdd)">+ إضافة مركبة جديدة</button>
+        <section id="s-page">
+            <div style="margin-bottom:20px;">
+                <input type="text" id="search" placeholder="🔍 ابحث بالعميل أو اللوحة..." onkeyup="search()">
+                <button class="main-btn" style="background:var(--safe)" onclick="vAction(openForm)">+ إضافة مركبة</button>
             </div>
-            <div id="cardsResult"></div>
+            <div id="results"></div>
         </section>
 
-        <section id="page-inventory" style="display: none;">
-            <div class="glass-panel" style="padding: 30px;">
-                <h2 style="margin-top:0">📝 تسجيل حصر</h2>
-                <label style="opacity: 0.6; font-size: 14px;">المركبة المختارة</label>
-                <input type="text" id="selectedLabel" readonly style="background:rgba(0,0,0,0.05); margin-top:5px; font-weight:700;">
-                
-                <label style="opacity: 0.6; font-size: 14px; margin-top:15px; display:block;">منطقة الموقف</label>
-                <select id="unitSelect" style="padding:15px; margin-top:5px;"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>VIP</option></select>
-                
-                <label style="opacity: 0.6; font-size: 14px; margin-top:15px; display:block;">رقم الموقف</label>
-                <input type="number" id="slotNo" placeholder="مثال: 105" style="margin-top:5px;">
-                
-                <button class="submit-btn" onclick="confirmInventory()" style="margin-top:20px;">تأكيد الإرسال</button>
+        <section id="i-page" style="display:none">
+            <div style="background:var(--panel); padding:25px; border-radius:20px; border:1px solid var(--border)">
+                <h3>📝 تسجيل حصر</h3>
+                <input type="text" id="target" readonly style="opacity:0.7">
+                <select id="unit"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>VIP</option></select>
+                <input type="number" id="slot" placeholder="رقم الموقف">
+                <button class="main-btn" onclick="sendInv()">تأكيد الحصر</button>
             </div>
         </section>
     </div>
 
-    <div id="data-modal" class="modal">
-        <div class="glass-panel" style="max-width: 500px; width: 100%; padding: 30px;">
-            <h3 id="modal-title">بيانات المركبة</h3>
-            <input type="hidden" id="entry-row">
-            <input type="text" id="f-client" placeholder="اسم العميل">
-            <input type="text" id="f-plate" placeholder="رقم اللوحة">
-            <input type="text" id="f-model" placeholder="الموديل">
-            <input type="text" id="f-color" placeholder="اللون">
-            <input type="text" id="f-emp" placeholder="اسم الموظف">
-            <select id="f-status" style="padding:15px;"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="submit-btn" onclick="saveData()" style="flex:2">حفظ</button>
-                <button class="submit-btn" style="background:#8e8e93; flex:1" onclick="closeModal()">إلغاء</button>
-            </div>
+    <div id="modal" class="modal">
+        <div style="background:var(--panel); padding:25px; border-radius:20px; width:100%; max-width:450px;">
+            <h3 id="m-title">البيانات</h3>
+            <input type="hidden" id="row-id">
+            <input type="text" id="f-c" placeholder="العميل">
+            <input type="text" id="f-p" placeholder="اللوحة">
+            <input type="text" id="f-m" placeholder="الموديل">
+            <input type="text" id="f-l" placeholder="اللون">
+            <input type="text" id="f-e" placeholder="الموظف">
+            <select id="f-s"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
+            <button class="main-btn" onclick="save()">حفظ</button>
+            <button class="main-btn" style="background:none; color:var(--text)" onclick="closeModal()">إلغاء</button>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <div class="nav-tab active" onclick="switchTab('page-search', this)"><i class="fas fa-search"></i></div>
-        <div class="nav-tab" onclick="switchTab('page-inventory', this)"><i class="fas fa-parking"></i></div>
+    <nav class="bottom-bar">
+        <div class="tab active" onclick="switchT('s-page', this)"><i class="fas fa-search"></i></div>
+        <div class="tab" onclick="switchT('i-page', this)"><i class="fas fa-parking"></i></div>
     </nav>
 
     <script>
         let db = [];
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
+        const SCRIPT = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
+        const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
-        function handleLogin() {
-            const u = document.getElementById('user').value, p = document.getElementById('pass').value;
-            if((u === "abdullah@awtad" && p === "3344") || (u === "asim@link" && p === "0707")) {
-                document.getElementById('login-page').style.display = 'none'; loadData();
-            } else alert("بيانات الدخول غير صحيحة");
+        function auth() {
+            const user = document.getElementById('u').value, pass = document.getElementById('p').value;
+            if((user === "abdullah@awtad" && pass === "3344") || (user === "asim@link" && pass === "0707")) {
+                document.getElementById('login').style.display='none'; load();
+            } else alert("خطأ!");
         }
 
-        async function loadData() {
-            try {
-                const res = await fetch(CSV_URL);
-                const text = await res.text();
-                const rows = text.split('\n').filter(r => r.trim() !== '');
-                db = rows.slice(1).map((r, i) => {
-                    const c = r.split(',').map(f => f.trim());
-                    return { row: i + 2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
-                });
-                render(db);
-            } catch(e) { alert("فشل جلب البيانات"); }
+        async function load() {
+            const r = await fetch(CSV); const t = await r.text();
+            const rows = t.split('\n').filter(x => x.trim() !== '');
+            db = rows.slice(1).map((x, i) => {
+                const c = x.split(',').map(y => y.trim());
+                return { row: i+2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
+            });
+            render(db);
         }
 
         function render(data) {
-            const res = document.getElementById('cardsResult'); res.innerHTML = '';
+            const res = document.getElementById('results'); res.innerHTML = '';
             data.forEach(i => {
-                const isActive = i.status.includes("نشط") || i.status.toLowerCase().includes("active");
-                const card = document.createElement('div');
-                card.className = `car-card ${isActive ? 'active-indicator' : 'inactive-indicator'}`;
-                card.innerHTML = `
-                    <span class="client-header">${i.client}</span>
-                    <div class="plate-row">${i.plate}</div>
-                    <div class="info-row"><b>الموديل:</b> ${i.model}</div>
-                    <div class="info-row"><b>اللون:</b> ${i.color}</div>
-                    <div class="emp-badge"><i class="fas fa-id-badge"></i> الموظف: ${i.emp}</div>
-                    <div class="card-actions">
-                        <div class="action-circle" onclick="secureAction(() => openEdit(${JSON.stringify(i).replace(/"/g, '&quot;')}), event)"><i class="fas fa-edit"></i></div>
-                        <div class="action-circle del" onclick="secureAction(() => deleteRow(${i.row}), event)"><i class="fas fa-trash-alt"></i></div>
+                const active = i.status.includes("نشط") || i.status.toLowerCase().includes("active");
+                const div = document.createElement('div');
+                div.className = `car-card ${active ? 'active-side' : 'inactive-side'}`;
+                div.innerHTML = `
+                    <span class="c-name">${i.client}</span>
+                    <div class="c-plate">${i.plate}</div>
+                    <div class="c-info"><b>النوع:</b> ${i.model} | <b>اللون:</b> ${i.color}</div>
+                    <div class="c-emp"><i class="fas fa-user-circle"></i> ${i.emp}</div>
+                    <div class="actions">
+                        <div class="act-btn" onclick="vAction(()=>openEdit(${JSON.stringify(i).replace(/"/g, '&quot;')}), event)"><i class="fas fa-pen"></i></div>
+                        <div class="act-btn" style="color:red" onclick="vAction(()=>del(${i.row}), event)"><i class="fas fa-trash"></i></div>
                     </div>
                 `;
-                card.onclick = () => {
-                    document.getElementById('selectedLabel').value = i.plate + " - " + i.client;
-                    switchTab('page-inventory', document.querySelectorAll('.nav-tab')[1]);
+                div.onclick = () => {
+                    document.getElementById('target').value = i.plate + " - " + i.client;
+                    switchT('i-page', document.querySelectorAll('.tab')[1]);
                 };
-                res.appendChild(card);
+                res.appendChild(div);
             });
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            const btn = document.getElementById('themeBtn');
-            btn.classList.toggle('active');
-            btn.innerHTML = document.body.classList.contains('dark') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        function search() {
+            const v = document.getElementById('search').value.toLowerCase();
+            render(db.filter(x => x.client.toLowerCase().includes(v) || x.plate.toLowerCase().includes(v) || x.emp.toLowerCase().includes(v)));
         }
 
-        function toggleDesktop() {
-            document.body.classList.toggle('desktop-mode');
-            document.getElementById('desktopBtn').classList.toggle('active');
+        function vAction(cb, e) { if(e) e.stopPropagation(); if(prompt("رمز العمليات:") === "0707") cb(); else alert("خطأ!"); }
+
+        function toggleMode(m) { 
+            document.body.classList.toggle(m); 
+            if(m === 'desktop') document.getElementById('dBtn').classList.toggle('active');
         }
 
-        function secureAction(callback, event) {
-            if (event) event.stopPropagation();
-            const pw = prompt("كلمة مرور العمليات:");
-            if (pw === "0707") callback(); else if (pw !== null) alert("خطأ!");
-        }
-
-        function filterData() {
-            const val = document.getElementById('mainSearch').value.toLowerCase();
-            render(db.filter(i => i.plate.toLowerCase().includes(val) || i.client.toLowerCase().includes(val) || i.emp.toLowerCase().includes(val)));
-        }
-
-        function openAdd() {
-            document.getElementById('modal-title').innerText = "إضافة مركبة";
-            document.getElementById('entry-row').value = "";
-            document.querySelectorAll('#data-modal input').forEach(inp => inp.value = "");
-            document.getElementById('data-modal').style.display = 'flex';
-        }
-
+        function openForm() { document.getElementById('m-title').innerText="إضافة"; document.getElementById('row-id').value=""; document.getElementById('modal').style.display='flex'; }
+        
         function openEdit(item) {
-            document.getElementById('modal-title').innerText = "تعديل البيانات";
-            document.getElementById('entry-row').value = item.row;
-            document.getElementById('f-client').value = item.client;
-            document.getElementById('f-plate').value = item.plate;
-            document.getElementById('f-model').value = item.model;
-            document.getElementById('f-color').value = item.color;
-            document.getElementById('f-emp').value = item.emp;
-            document.getElementById('f-status').value = item.status;
-            document.getElementById('data-modal').style.display = 'flex';
+            document.getElementById('m-title').innerText="تعديل";
+            document.getElementById('row-id').value = item.row;
+            document.getElementById('f-c').value = item.client;
+            document.getElementById('f-p').value = item.plate;
+            document.getElementById('f-m').value = item.model;
+            document.getElementById('f-l').value = item.color;
+            document.getElementById('f-e').value = item.emp;
+            document.getElementById('f-s').value = item.status;
+            document.getElementById('modal').style.display='flex';
         }
 
-        function closeModal() { document.getElementById('data-modal').style.display = 'none'; }
+        function closeModal() { document.getElementById('modal').style.display='none'; }
 
-        async function saveData() {
-            const row = document.getElementById('entry-row').value;
-            const data = { action: row ? 'edit_car' : 'add_car', row: row, client: document.getElementById('f-client').value, plate: document.getElementById('f-plate').value, model: document.getElementById('f-model').value, color: document.getElementById('f-color').value, emp: document.getElementById('f-emp').value, status: document.getElementById('f-status').value };
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            alert("تم بنجاح!"); location.reload();
-        }
-
-        async function deleteRow(row) {
-            if(!confirm("حذف نهائي؟")) return;
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'delete_car', row: row }) });
+        async function save() {
+            const rid = document.getElementById('row-id').value;
+            const payload = { action: rid ? 'edit_car' : 'add_car', row: rid, client: document.getElementById('f-c').value, plate: document.getElementById('f-p').value, model: document.getElementById('f-m').value, color: document.getElementById('f-l').value, emp: document.getElementById('f-e').value, status: document.getElementById('f-s').value };
+            await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
             location.reload();
         }
 
-        async function confirmInventory() {
-            const plate = document.getElementById('selectedLabel').value;
-            if(!plate) return alert("اختر مركبة أولاً");
-            const data = { action: 'log_entry', plate: plate, unit: document.getElementById('unitSelect').value, slot: document.getElementById('slotNo').value };
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            alert("تم رفع الحصر بنجاح ✓"); switchTab('page-search', document.querySelectorAll('.nav-tab')[0]);
+        async function del(r) { if(confirm("حذف؟")) { await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action:'delete_car', row:r}) }); location.reload(); } }
+
+        async function sendInv() {
+            const p = document.getElementById('target').value;
+            if(!p) return alert("اختر مركبة");
+            await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action:'log_entry', plate:p, unit:document.getElementById('unit').value, slot:document.getElementById('slot').value}) });
+            alert("تم الحصر"); location.reload();
         }
 
-        function switchTab(id, el) {
-            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-            document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).style.display = 'block'; el.classList.add('active');
+        function switchT(p, el) {
+            document.querySelectorAll('section').forEach(s => s.style.display='none');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(p).style.display='block'; el.classList.add('active');
         }
     </script>
 </body>
