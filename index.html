@@ -74,11 +74,22 @@
         .active-indicator { border-right: 6px solid var(--status-active); box-shadow: -5px 0 15px rgba(52, 199, 89, 0.2); }
         .inactive-indicator { border-right: 6px solid var(--status-inactive); box-shadow: -5px 0 15px rgba(255, 59, 48, 0.2); }
 
-        .share-btn {
-            position: absolute; left: 15px; bottom: 15px; width: 35px; height: 35px;
-            background: var(--input-bg); border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; color: var(--accent); transition: 0.3s;
-        }
+      .share-btn {
+    position: absolute; 
+    left: 15px; 
+    bottom: 15px; 
+    width: 42px; /* كبرنا الحجم قليلاً لسهولة الضغط */
+    height: 42px;
+    background: var(--accent); /* جعلنا اللون بارزاً */
+    color: white; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: 0.3s;
+    z-index: 10; /* لضمان ظهوره فوق العناصر الأخرى */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 
         .submit-btn {
             width: 100%; padding: 18px; background: var(--accent); color: white;
@@ -276,16 +287,35 @@
             });
         }
 
-        function shareData(plate, emp, event) {
-            event.stopPropagation();
-            const text = `بيانات مواقف مجدول (Majodul Parking):\nاللوحة: ${plate}\nالموظف: ${emp}\nالمشغل: Link Expert`;
-            if (navigator.share) {
-                navigator.share({ title: 'Majodul Parking System', text: text });
-            } else {
-                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
-            }
-        }
+     function shareData(plate, emp, event) {
+    // منع انتشار الحدث لعدم فتح صفحة الحصر عند الضغط على مشاركة
+    if (event) event.stopPropagation();
 
+    const title = 'نظام مواقف مجدول - Majodul Parking';
+    const text = `🚗 بيانات مركبة من نظام مواقف مجدول:\n\n` +
+                 `• رقم اللوحة: ${plate}\n` +
+                 `• الموظف: ${emp}\n` +
+                 `• المشغل: Link Expert\n` +
+                 `• التاريخ: ${new Date().toLocaleDateString('ar-SA')}`;
+
+    // 1. محاولة استخدام مشاركة النظام (للهواتف)
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: text
+        }).then(() => {
+            showToast("تمت المشاركة بنجاح");
+        }).catch((err) => {
+            console.log("تم إلغاء المشاركة");
+        });
+    } 
+    // 2. حل بديل للحواسب والمتصفحات التي لا تدعم المشاركة (الواتساب)
+    else {
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(whatsappUrl, '_blank');
+        showToast("جاري فتح واتساب...");
+    }
+}
         function checkAuth(mode) {
             const p = prompt("Security Authentication Required:");
             if(p === "0707") document.getElementById('addModal').style.display = 'flex';
