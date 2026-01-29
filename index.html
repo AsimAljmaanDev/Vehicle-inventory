@@ -4,97 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام مواقف برج مجدول</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root {
             --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.85); --text-color: #1c1c1e;
             --accent: #007aff; --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(120, 120, 128, 0.12);
             --status-active: #34c759; --status-inactive: #ff3b30; --container-width: 500px;
         }
-
         body.dark {
             --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.9); --text-color: #ffffff;
             --accent: #0a84ff; --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(120, 120, 128, 0.24);
         }
-
         body.desktop-mode { --container-width: 1000px; }
-
         body {
-            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-            background-color: var(--bg-color); color: var(--text-color); transition: all 0.3s ease; padding-bottom: 100px;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--bg-color); color: var(--text-color); transition: 0.3s; padding-bottom: 100px;
         }
-
-        /* صفحة تسجيل الدخول */
         #login-page {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: var(--bg-color); z-index: 5000; display: flex; align-items: center; justify-content: center;
         }
-
         header {
             background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             padding: 10px 20px; border-bottom: 0.5px solid var(--glass-border); position: sticky; top: 0; z-index: 1000;
         }
-
         .header-content { max-width: var(--container-width); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .logo-majdoul { height: 40px; } .logo-link { height: 30px; }
-
-        .top-actions { display: flex; gap: 12px; }
-        .icon-btn { font-size: 18px; color: var(--accent); cursor: pointer; padding: 10px; border-radius: 50%; background: var(--input-bg); }
-
         .container { max-width: var(--container-width); margin: 0 auto; padding: 20px; box-sizing: border-box; }
-        
         .page-section { display: none; width: 100%; animation: slideUp 0.3s ease-out; }
         .page-section.active { display: block; }
-
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
         .glass-panel { 
-            background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 0.5px solid var(--glass-border); border-radius: 25px; 
-            padding: 25px; margin-bottom: 20px; width: 100%; box-sizing: border-box;
+            background: var(--card-bg); backdrop-filter: blur(30px); border: 0.5px solid var(--glass-border); 
+            border-radius: 25px; padding: 25px; margin-bottom: 20px; box-sizing: border-box;
         }
-
         input, select { 
             width: 100%; padding: 15px; border-radius: 12px; border: none; 
-            background: var(--input-bg); color: var(--text-color); 
-            font-size: 16px; margin-bottom: 15px; outline: none; box-sizing: border-box;
+            background: var(--input-bg); color: var(--text-color); font-size: 16px; margin-bottom: 15px; outline: none; box-sizing: border-box;
         }
-
         .car-card { 
-            background: var(--card-bg); border-radius: 20px; padding: 20px; 
-            margin-bottom: 15px; border-right: 8px solid #ccc; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; position: relative; width: 100%; box-sizing: border-box;
+            background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 15px; 
+            border-right: 8px solid #ccc; box-shadow: 0 4px 20px rgba(0,0,0,0.1); cursor: pointer; position: relative;
         }
         .car-card.active-status { border-right-color: var(--status-active); }
         .car-card.inactive-status { border-right-color: var(--status-inactive); }
-        
-        .edit-icon { position: absolute; top: 15px; left: 15px; color: var(--accent); padding: 10px; }
-
+        .edit-icon { position: absolute; top: 15px; left: 15px; color: var(--accent); padding: 10px; font-size: 18px; }
         .status-badge { display: inline-block; padding: 5px 15px; border-radius: 50px; font-size: 13px; font-weight: bold; margin-top: 10px; }
         .active-badge { background: rgba(52, 199, 89, 0.2); color: var(--status-active); }
         .inactive-badge { background: rgba(255, 59, 48, 0.2); color: var(--status-inactive); }
-
-        .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-top: 0.5px solid var(--glass-border); display: flex; padding: 10px 0 25px; z-index: 1000; }
+        .submit-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 15px; font-size: 17px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); backdrop-filter: blur(25px); border-top: 0.5px solid var(--glass-border); display: flex; padding: 10px 0 25px; z-index: 1000; }
         .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; }
-        .nav-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-tab.active { color: var(--accent); }
-
-        /* تعديل النوافذ المنبثقة لتظهر بشكل صحيح */
         #editModal, #addModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: none; overflow-y: auto; padding: 20px; box-sizing: border-box; }
     </style>
 </head>
 <body class="dark">
 
     <div id="login-page">
-        <div class="glass-panel" style="max-width: 350px;">
+        <div class="glass-panel" style="width: 90%; max-width: 350px;">
             <div style="text-align: center; margin-bottom: 20px;">
-                <img src="majdoul.png" style="height: 50px;" alt="Logo">
-                <h3>تسجيل الدخول</h3>
+                <h3>نظام المواقف - دخول</h3>
             </div>
             <input type="text" id="user" placeholder="اسم المستخدم">
             <input type="password" id="pass" placeholder="كلمة المرور">
@@ -104,13 +74,12 @@
 
     <header>
         <div class="header-content">
-            <img src="majdoul.png" class="logo-majdoul" alt="Majdoul Logo">
-            <div class="top-actions">
-                <i class="fas fa-desktop icon-btn" onclick="document.body.classList.toggle('desktop-mode')"></i>
-                <i class="fas fa-adjust icon-btn" onclick="document.body.classList.toggle('dark')"></i>
-                <i class="fas fa-sign-out-alt icon-btn" onclick="location.reload()"></i>
+            <img src="majdoul.png" class="logo-majdoul">
+            <div>
+                <i class="fas fa-desktop icon-btn" style="color:var(--accent); margin-left:10px; cursor:pointer" onclick="document.body.classList.toggle('desktop-mode')"></i>
+                <i class="fas fa-adjust icon-btn" style="color:var(--accent); cursor:pointer" onclick="document.body.classList.toggle('dark')"></i>
             </div>
-            <img src="linkexpert.png" class="logo-link" alt="LinkExpert Logo">
+            <img src="linkexpert.png" class="logo-link">
         </div>
     </header>
 
@@ -119,7 +88,7 @@
             <div class="glass-panel">
                 <input type="text" id="plateSearch" placeholder="ابحث برقم اللوحة..." oninput="searchByPlate()">
                 <input type="text" id="infoSearch" placeholder="ابحث بالاسم أو العميل..." oninput="searchByInfo()">
-                <button class="submit-btn" style="background: var(--status-active); margin-top: 10px;" onclick="checkAuth('add')">
+                <button class="submit-btn" style="background: var(--status-active);" onclick="checkAuth('add')">
                     <i class="fas fa-plus-circle"></i> إضافة مركبة جديدة
                 </button>
             </div>
@@ -129,12 +98,9 @@
         <section id="page-inventory" class="page-section">
             <div class="glass-panel">
                 <h2 style="margin-top:0">📝 تسجيل حصر</h2>
-                <label>المركبة المختارة</label>
-                <input type="text" id="selectedLabel" readonly placeholder="يرجى الاختيار من البحث">
-                <label>الوحدة (Unit)</label>
+                <input type="text" id="selectedLabel" readonly style="opacity: 0.7;" placeholder="اختر مركبة من البحث أولاً">
                 <select id="unitSelect"><option>P1</option><option>P1-VIP</option><option>P2</option><option>P3</option><option>P4</option><option>Landscape</option></select>
-                <label>رقم الموقف</label>
-                <input type="number" id="slotNo" placeholder="أدخل رقم الموقف">
+                <input type="number" id="slotNo" placeholder="رقم الموقف">
                 <button class="submit-btn" onclick="confirmEntry()">تأكيد وإرسال البيانات</button>
             </div>
         </section>
@@ -142,41 +108,52 @@
 
     <div id="editModal">
         <div class="glass-panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin:0">تعديل البيانات</h2>
-                <i class="fas fa-times icon-btn" onclick="document.getElementById('editModal').style.display='none'"></i>
-            </div>
+            <h3>تعديل البيانات</h3>
             <input type="hidden" id="editIdx">
-            <input type="text" id="editClient" placeholder="العميل">
-            <input type="text" id="editPlate" placeholder="اللوحة">
-            <input type="text" id="editModel" placeholder="الموديل">
-            <input type="text" id="editEmp" placeholder="الموظف">
+            <label>العميل</label><input type="text" id="editClient">
+            <label>اللوحة</label><input type="text" id="editPlate">
+            <label>الموديل</label><input type="text" id="editModel">
+            <label>اللون</label><input type="text" id="editColor">
+            <label>الموظف</label><input type="text" id="editEmp">
+            <label>الحالة</label>
             <select id="editStatus"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
-            <button class="submit-btn" onclick="saveEdit()">حفظ التعديلات</button>
+            <button class="submit-btn" onclick="saveEdit()">حفظ التعديل</button>
+            <button class="submit-btn" style="background:#8e8e93; margin-top:10px;" onclick="document.getElementById('editModal').style.display='none'">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="addModal">
+        <div class="glass-panel">
+            <h3>إضافة مركبة جديدة</h3>
+            <label>العميل</label><input type="text" id="addClient">
+            <label>اللوحة</label><input type="text" id="addPlate">
+            <label>الموديل</label><input type="text" id="addModel">
+            <label>اللون</label><input type="text" id="addColor">
+            <label>الموظف</label><input type="text" id="addEmp">
+            <label>الحالة</label>
+            <select id="addStatus"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
+            <button class="submit-btn" style="background: var(--status-active);" onclick="saveAdd()">إضافة للملف</button>
+            <button class="submit-btn" style="background:#8e8e93; margin-top:10px;" onclick="document.getElementById('addModal').style.display='none'">إلغاء</button>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-tab active" onclick="switchPage('page-search', this)"><i class="fas fa-search"></i><span>البحث</span></div>
-        <div class="nav-tab" onclick="switchPage('page-inventory', this)"><i class="fas fa-plus-square"></i><span>التسجيل</span></div>
+        <div class="nav-tab active" onclick="switchPage('page-search', this)"><i class="fas fa-search"></i><br><span>البحث</span></div>
+        <div class="nav-tab" onclick="switchPage('page-inventory', this)"><i class="fas fa-plus-square"></i><br><span>التسجيل</span></div>
     </nav>
 
     <script>
-        let db = []; 
-        let activeCar = null;
+        let db = []; let activeCar = null;
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynq-4N4tP722M_qtJuZ73hMpE_Q3JUj45IDRMUrDkX0kZK2kIA7SNaMD9oQc3e2D0_/exec"; 
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
-        // تسجيل الدخول
         function handleLogin() {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
             if((u === "abdullah@awtad" && p === "3344") || (u === "asim@link" && p === "0707")) {
                 document.getElementById('login-page').style.display = 'none';
                 loadData();
-            } else {
-                alert("بيانات الدخول غير صحيحة");
-            }
+            } else { alert("خطأ في البيانات"); }
         }
 
         async function loadData() {
@@ -187,25 +164,23 @@
                     const c = r.split(',').map(f => f.trim());
                     return { client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
                 });
-            } catch(e) { console.error("CSV Load Error"); }
+            } catch(e) { console.error("Error loading CSV"); }
         }
 
         function render(filtered) {
             const container = document.getElementById('cardsResult');
             container.innerHTML = '';
-            if(!filtered.length) return;
             filtered.slice(0, 15).forEach(item => {
                 const realIdx = db.findIndex(x => x.plate === item.plate && x.emp === item.emp);
-                const isActive = item.status && (item.status === 'نشط' || item.status === 'Active');
+                const isActive = item.status === 'نشط' || item.status === 'Active';
                 const card = document.createElement('div');
                 card.className = `car-card ${isActive ? 'active-status' : 'inactive-status'}`;
-                card.innerHTML = `
-                    <i class="fas fa-edit edit-icon" onclick="checkAuth('edit', ${realIdx}); event.stopPropagation();"></i>
-                    <p style="color:var(--accent); font-weight:bold; margin-bottom:5px">العميل: ${item.client}</p>
+                card.innerHTML = `<i class="fas fa-edit edit-icon" onclick="checkAuth('edit', ${realIdx}); event.stopPropagation();"></i>
+                    <p style="color:var(--accent); font-weight:bold; margin:0">العميل: ${item.client}</p>
                     <h3 style="margin:5px 0">اللوحة: ${item.plate}</h3>
-                    <p>الموديل: ${item.model}</p><p>اللون: ${item.color}</p><p>اسم الموظف: ${item.emp}</p>
-                    <span class="status-badge ${isActive ? 'active-badge' : 'inactive-badge'}">الحالة: ${item.status}</span>
-                `;
+                    <p style="margin:2px 0; font-size:14px">الموديل: ${item.model} | اللون: ${item.color}</p>
+                    <p style="margin:2px 0; font-size:14px">الموظف: ${item.emp}</p>
+                    <span class="status-badge ${isActive ? 'active-badge' : 'inactive-badge'}">${item.status}</span>`;
                 card.onclick = () => { 
                     activeCar = item; 
                     document.getElementById('selectedLabel').value = `${item.plate} - ${item.emp}`; 
@@ -216,41 +191,37 @@
         }
 
         function checkAuth(mode, idx) {
-            // استخدام حقل كلمة مرور مخفي
-            const p = prompt("يُرجى إدخال كلمة المرور للعمليات الحساسة:");
+            const p = prompt("كلمة المرور للعملية:");
             if(p !== "0707") return alert("خطأ!");
-            
             if(mode === 'edit') {
-                const car = db[idx];
+                const c = db[idx];
                 document.getElementById('editIdx').value = idx;
-                document.getElementById('editClient').value = car.client;
-                document.getElementById('editPlate').value = car.plate;
-                document.getElementById('editModel').value = car.model;
-                document.getElementById('editEmp').value = car.emp;
-                document.getElementById('editStatus').value = car.status;
+                document.getElementById('editClient').value = c.client;
+                document.getElementById('editPlate').value = c.plate;
+                document.getElementById('editModel').value = c.model;
+                document.getElementById('editColor').value = c.color;
+                document.getElementById('editEmp').value = c.emp;
+                document.getElementById('editStatus').value = c.status;
                 document.getElementById('editModal').style.display = 'block';
-            } else if(mode === 'add') {
-                alert("ميزة الإضافة تتطلب ربط النموذج بـ Apps Script");
-            }
+            } else { document.getElementById('addModal').style.display = 'block'; }
         }
 
         function saveEdit() {
-            const idx = document.getElementById('editIdx').value;
-            const data = {
-                action: 'edit_car',
-                rowIdx: parseInt(idx) + 2, // تحويل للسطر الصحيح في Sheet
-                client: document.getElementById('editClient').value,
-                plate: document.getElementById('editPlate').value,
-                model: document.getElementById('editModel').value,
-                emp: document.getElementById('editEmp').value,
-                status: document.getElementById('editStatus').value
-            };
-            post(data);
+            post({ action: 'edit_car', rowIdx: parseInt(document.getElementById('editIdx').value) + 2,
+                client: document.getElementById('editClient').value, plate: document.getElementById('editPlate').value,
+                model: document.getElementById('editModel').value, color: document.getElementById('editColor').value,
+                emp: document.getElementById('editEmp').value, status: document.getElementById('editStatus').value });
+        }
+
+        function saveAdd() {
+            post({ action: 'add_car', client: document.getElementById('addClient').value, plate: document.getElementById('addPlate').value,
+                model: document.getElementById('addModel').value, color: document.getElementById('addColor').value,
+                emp: document.getElementById('addEmp').value, status: document.getElementById('addStatus').value });
         }
 
         function post(data) { 
             fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
-            .then(() => { alert("تمت العملية بنجاح"); location.reload(); }); 
+            .then(() => { alert("تمت العملية"); location.reload(); }); 
         }
 
         function confirmEntry() { 
@@ -264,9 +235,7 @@
         function switchPage(id, el) { 
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active')); 
             document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active')); 
-            document.getElementById(id).classList.add('active'); 
-            el.classList.add('active'); 
-            window.scrollTo(0,0);
+            document.getElementById(id).classList.add('active'); el.classList.add('active'); 
         }
     </script>
 </body>
