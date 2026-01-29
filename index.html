@@ -1,245 +1,269 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Link Expert | Professional Edition</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --bg: #f0f2f5; --panel: #ffffff; --text: #1c1c1e;
-            --accent: #007aff; --safe: #34c759; --danger: #ff3b30;
-            --border: rgba(0,0,0,0.1); --max-w: 500px;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Link Expert | Parking System</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<style>
+		:root {
+			--bg: #f0f2f5; --panel: #ffffff; --text: #1c1c1e;
+			--accent: #007aff; --safe: #34c759; --danger: #ff3b30;
+			--border: rgba(0,0,0,0.1); --max-w: 500px;
+		}
 
-        body.dark {
-            --bg: #000000; --panel: #1c1c1e; --text: #ffffff;
-            --border: rgba(255,255,255,0.1);
-        }
+		body.dark {
+			--bg: #000000; --panel: #1c1c1e; --text: #ffffff;
+			--border: rgba(255,255,255,0.1);
+		}
 
-        body.desktop { --max-w: 1200px; }
+		body.desktop { --max-w: 1200px; }
+		body.desktop #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
 
-        body { 
-            margin: 0; background: var(--bg); color: var(--text); 
-            font-family: 'Segoe UI', Roboto, sans-serif; transition: 0.3s;
-            padding-bottom: 100px;
-        }
+		body { 
+			margin: 0; background: var(--bg); color: var(--text); 
+			font-family: 'Segoe UI', system-ui, sans-serif; transition: 0.3s;
+			padding-bottom: 110px;
+		}
 
-        /* الهيدر المنظم */
-        header {
-            background: var(--panel); border-bottom: 1px solid var(--border);
-            padding: 10px 20px; position: sticky; top: 0; z-index: 1000;
-        }
-        .nav-container { 
-            max-width: var(--max-w); margin: 0 auto; 
-            display: flex; justify-content: space-between; align-items: center; 
-        }
-        .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; color: var(--accent); }
-        .controls { display: flex; gap: 8px; }
+		/* إصلاح الهيدر والشعار */
+		header {
+			background: var(--panel); border-bottom: 1px solid var(--border);
+			padding: 12px 20px; position: sticky; top: 0; z-index: 1000;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+		}
+		.nav-container { 
+			max-width: var(--max-w); margin: 0 auto; 
+			display: flex; justify-content: space-between; align-items: center; 
+		}
+		.logo-box { display: flex; align-items: center; gap: 12px; }
+		.logo-img { height: 40px; width: auto; object-fit: contain; display: block; }
+		.brand-name { font-weight: 900; font-size: 18px; color: var(--accent); }
 
-        .btn-circle {
-            width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border);
-            background: var(--panel); color: var(--text); cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: 0.2s;
-        }
-        .btn-circle.active { background: var(--accent); color: #fff; }
+		.controls { display: flex; gap: 10px; }
+		.btn-circle {
+			width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border);
+			background: var(--panel); color: var(--text); cursor: pointer;
+			display: flex; align-items: center; justify-content: center; font-size: 18px;
+		}
+		.btn-circle.active { background: var(--accent); color: #fff; }
 
-        .container { width: 95%; max-width: var(--max-w); margin: 20px auto; }
+		.container { width: 95%; max-width: var(--max-w); margin: 25px auto; }
 
-        /* تصميم البطاقة الجديد */
-        .car-card {
-            background: var(--panel); border-radius: 20px; padding: 20px; margin-bottom: 20px;
-            border: 1px solid var(--border); position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .active-side { border-right: 8px solid var(--safe); }
-        .inactive-side { border-right: 8px solid var(--danger); }
+		/* البطاقة الاحترافية */
+		.car-card {
+			background: var(--panel); border-radius: 22px; padding: 22px; margin-bottom: 20px;
+			border: 1px solid var(--border); position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+			transition: 0.3s; cursor: pointer;
+		}
+		.car-card:active { transform: scale(0.98); }
+		.active-side { border-right: 10px solid var(--safe); }
+		.inactive-side { border-right: 10px solid var(--danger); }
 
-        .c-name { font-size: 22px; font-weight: 800; color: var(--accent); display: block; margin-bottom: 5px; }
-        .c-plate { font-size: 28px; font-weight: 900; letter-spacing: 2px; margin: 10px 0; }
-        .c-info { font-size: 16px; opacity: 0.8; line-height: 1.6; }
-        .c-emp { margin-top: 15px; font-weight: 600; font-size: 14px; background: rgba(0,0,0,0.05); padding: 5px 12px; border-radius: 20px; display: inline-block; }
+		.c-name { font-size: 22px; font-weight: 800; color: var(--accent); display: block; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+		.c-plate { font-size: 30px; font-weight: 900; letter-spacing: 2px; margin: 12px 0; color: var(--text); }
+		.c-info { font-size: 17px; opacity: 0.9; margin: 5px 0; }
+		.c-emp { margin-top: 15px; font-weight: 600; font-size: 15px; background: rgba(0,122,255,0.1); color: var(--accent); padding: 6px 15px; border-radius: 20px; display: inline-flex; align-items: center; gap: 8px; }
 
-        .actions { position: absolute; left: 15px; top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .act-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--panel); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+		.actions { position: absolute; left: 15px; top: 20px; display: flex; flex-direction: column; gap: 12px; }
+		.act-btn { width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border); background: var(--panel); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        /* المدخلات */
-        input, select { 
-            width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; 
-            border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 16px; box-sizing: border-box;
-        }
-        .main-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; background: var(--accent); color: #fff; font-size: 18px; font-weight: 700; cursor: pointer; }
+		input, select { 
+			width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 15px; 
+			border: 2px solid var(--border); background: var(--panel); color: var(--text); font-size: 18px; box-sizing: border-box; outline: none;
+		}
+		input:focus { border-color: var(--accent); }
+		.main-btn { width: 100%; padding: 18px; border: none; border-radius: 18px; background: var(--accent); color: #fff; font-size: 19px; font-weight: 800; cursor: pointer; box-shadow: 0 5px 15px rgba(0,122,255,0.3); }
 
-        /* نافذة الإضافة/التعديل */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        
-        .bottom-bar {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; background: var(--panel); border: 1px solid var(--border);
-            border-radius: 50px; display: flex; padding: 5px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .tab { flex: 1; padding: 12px; text-align: center; border-radius: 40px; color: #8e8e93; cursor: pointer; font-size: 20px; }
-        .tab.active { background: var(--accent); color: #fff; }
+		/* شاشة الدخول */
+		#login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+		.login-card { background: var(--panel); padding: 45px 35px; border-radius: 30px; text-align: center; width: 85%; max-width: 380px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
-        #login { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; }
-    </style>
+		.bottom-bar {
+			position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+			width: 85%; max-width: 400px; background: var(--panel); border: 1px solid var(--border);
+			border-radius: 50px; display: flex; padding: 7px; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+		}
+		.tab { flex: 1; padding: 15px; text-align: center; border-radius: 40px; color: #8e8e93; cursor: pointer; font-size: 22px; transition: 0.3s; }
+		.tab.active { background: var(--accent); color: #fff; }
+
+		.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+	</style>
 </head>
 <body class="dark">
 
-    <div id="login">
-        <div style="background:var(--panel); padding:40px; border-radius:25px; text-align:center; width:80%; max-width:320px; border:1px solid var(--border);">
-            <img src="linkexpert.png" style="height:50px; margin-bottom:20px;">
-            <input type="text" id="u" placeholder="Identity">
-            <input type="password" id="p" placeholder="Key">
-            <button class="main-btn" onclick="auth()">دخول</button>
-        </div>
-    </div>
+	<div id="login">
+		<div class="login-card">
+			<img src="linkexpert.png" alt="Logo" class="logo-img" style="height: 70px; margin: 0 auto 30px auto;">
+			<h2 style="margin-bottom: 25px; font-weight: 800;">Parking System</h2>
+			<input type="text" id="u" placeholder="اسم المستخدم">
+			<input type="password" id="p" placeholder="كلمة المرور">
+			<button class="main-btn" onclick="auth()">دخول النظام</button>
+		</div>
+	</div>
 
-    <header>
-        <div class="nav-container">
-            <div class="brand"><img src="linkexpert.png" height="30"> LINK EXPERT</div>
-            <div class="controls">
-                <button class="btn-circle" onclick="toggleMode('dark')"><i class="fas fa-moon"></i></button>
-                <button class="btn-circle" id="dBtn" onclick="toggleMode('desktop')"><i class="fas fa-desktop"></i></button>
-                <button class="btn-circle" onclick="location.reload()"><i class="fas fa-sync"></i></button>
-            </div>
-        </div>
-    </header>
+	<header>
+		<div class="nav-container">
+			<div class="logo-box">
+				<img src="linkexpert.png" alt="Logo" class="logo-img">
+				<span class="brand-name">LINK EXPERT</span>
+			</div>
+			<div class="controls">
+				<button class="btn-circle" id="themeBtn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+				<button class="btn-circle" id="dBtn" onclick="toggleDesktop()"><i class="fas fa-desktop"></i></button>
+				<button class="btn-circle" onclick="location.reload()"><i class="fas fa-sync-alt"></i></button>
+			</div>
+		</div>
+	</header>
 
-    <div class="container">
-        <section id="s-page">
-            <div style="margin-bottom:20px;">
-                <input type="text" id="search" placeholder="🔍 ابحث بالعميل أو اللوحة..." onkeyup="search()">
-                <button class="main-btn" style="background:var(--safe)" onclick="vAction(openForm)">+ إضافة مركبة</button>
-            </div>
-            <div id="results"></div>
-        </section>
+	<div class="container">
+		<section id="s-page">
+			<div style="background:var(--panel); padding: 20px; border-radius: 25px; margin-bottom: 25px; border: 1px solid var(--border);">
+				<input type="text" id="search" placeholder="🔍 ابحث بالاسم، اللوحة، الموظف..." onkeyup="search()">
+				<button class="main-btn" style="background:var(--safe)" onclick="vAction(openForm)">+ إضافة مركبة جديدة</button>
+			</div>
+			<div id="results"></div>
+		</section>
 
-        <section id="i-page" style="display:none">
-            <div style="background:var(--panel); padding:25px; border-radius:20px; border:1px solid var(--border)">
-                <h3>📝 تسجيل حصر</h3>
-                <input type="text" id="target" readonly style="opacity:0.7">
-                <select id="unit"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>VIP</option></select>
-                <input type="number" id="slot" placeholder="رقم الموقف">
-                <button class="main-btn" onclick="sendInv()">تأكيد الحصر</button>
-            </div>
-        </section>
-    </div>
+		<section id="i-page" style="display:none">
+			<div style="background:var(--panel); padding:30px; border-radius:25px; border:1px solid var(--border)">
+				<h3 style="margin-top:0">📝 تسجيل حصر جديد</h3>
+				<label style="font-size: 14px; opacity: 0.7;">المركبة:</label>
+				<input type="text" id="target" readonly style="font-weight: 700; margin-top: 5px;">
+				<label style="font-size: 14px; opacity: 0.7;">الموقع:</label>
+				<select id="unit"><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option>VIP</option></select>
+				<label style="font-size: 14px; opacity: 0.7;">رقم الموقف:</label>
+				<input type="number" id="slot" placeholder="أدخل الرقم هنا">
+				<button class="main-btn" onclick="sendInv()">إرسال البيانات</button>
+			</div>
+		</section>
+	</div>
 
-    <div id="modal" class="modal">
-        <div style="background:var(--panel); padding:25px; border-radius:20px; width:100%; max-width:450px;">
-            <h3 id="m-title">البيانات</h3>
-            <input type="hidden" id="row-id">
-            <input type="text" id="f-c" placeholder="العميل">
-            <input type="text" id="f-p" placeholder="اللوحة">
-            <input type="text" id="f-m" placeholder="الموديل">
-            <input type="text" id="f-l" placeholder="اللون">
-            <input type="text" id="f-e" placeholder="الموظف">
-            <select id="f-s"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
-            <button class="main-btn" onclick="save()">حفظ</button>
-            <button class="main-btn" style="background:none; color:var(--text)" onclick="closeModal()">إلغاء</button>
-        </div>
-    </div>
+	<div id="modal" class="modal">
+		<div style="background:var(--panel); padding:30px; border-radius:25px; width:100%; max-width:480px;">
+			<h3 id="m-title" style="margin-top:0">بيانات المركبة</h3>
+			<input type="hidden" id="row-id">
+			<input type="text" id="f-c" placeholder="اسم العميل">
+			<input type="text" id="f-p" placeholder="رقم اللوحة">
+			<input type="text" id="f-m" placeholder="الموديل">
+			<input type="text" id="f-l" placeholder="اللون">
+			<input type="text" id="f-e" placeholder="اسم الموظف">
+			<select id="f-s"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
+			<div style="display: flex; gap: 12px; margin-top: 10px;">
+				<button class="main-btn" onclick="save()" style="flex:2">حفظ التغييرات</button>
+				<button class="main-btn" style="background:#8e8e93; flex:1" onclick="closeModal()">إلغاء</button>
+			</div>
+		</div>
+	</div>
 
-    <nav class="bottom-bar">
-        <div class="tab active" onclick="switchT('s-page', this)"><i class="fas fa-search"></i></div>
-        <div class="tab" onclick="switchT('i-page', this)"><i class="fas fa-parking"></i></div>
-    </nav>
+	<nav class="bottom-bar">
+		<div class="tab active" onclick="switchT('s-page', this)"><i class="fas fa-search"></i></div>
+		<div class="tab" onclick="switchT('i-page', this)"><i class="fas fa-parking"></i></div>
+	</nav>
 
-    <script>
-        let db = [];
-        const SCRIPT = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
-        const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
+	<script>
+		let db = [];
+		const SCRIPT = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
+		const CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
-        function auth() {
-            const user = document.getElementById('u').value, pass = document.getElementById('p').value;
-            if((user === "abdullah@awtad" && pass === "3344") || (user === "asim@link" && pass === "0707")) {
-                document.getElementById('login').style.display='none'; load();
-            } else alert("خطأ!");
-        }
+		function auth() {
+			const user = document.getElementById('u').value, pass = document.getElementById('p').value;
+			if((user === "abdullah@awtad" && pass === "3344") || (user === "asim@link" && pass === "0707")) {
+				document.getElementById('login').style.display='none'; load();
+			} else alert("بيانات الدخول خاطئة!");
+		}
 
-        async function load() {
-            const r = await fetch(CSV); const t = await r.text();
-            const rows = t.split('\n').filter(x => x.trim() !== '');
-            db = rows.slice(1).map((x, i) => {
-                const c = x.split(',').map(y => y.trim());
-                return { row: i+2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
-            });
-            render(db);
-        }
+		async function load() {
+			try {
+				const r = await fetch(CSV); const t = await r.text();
+				const rows = t.split('\n').filter(x => x.trim() !== '');
+				db = rows.slice(1).map((x, i) => {
+					const c = x.split(',').map(y => y.trim());
+					return { row: i+2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
+				});
+				render(db);
+			} catch(e) { alert("فشل الاتصال بالخادم"); }
+		}
 
-        function render(data) {
-            const res = document.getElementById('results'); res.innerHTML = '';
-            data.forEach(i => {
-                const active = i.status.includes("نشط") || i.status.toLowerCase().includes("active");
-                const div = document.createElement('div');
-                div.className = `car-card ${active ? 'active-side' : 'inactive-side'}`;
-                div.innerHTML = `
-                    <span class="c-name">${i.client}</span>
-                    <div class="c-plate">${i.plate}</div>
-                    <div class="c-info"><b>النوع:</b> ${i.model} | <b>اللون:</b> ${i.color}</div>
-                    <div class="c-emp"><i class="fas fa-user-circle"></i> ${i.emp}</div>
-                    <div class="actions">
-                        <div class="act-btn" onclick="vAction(()=>openEdit(${JSON.stringify(i).replace(/"/g, '&quot;')}), event)"><i class="fas fa-pen"></i></div>
-                        <div class="act-btn" style="color:red" onclick="vAction(()=>del(${i.row}), event)"><i class="fas fa-trash"></i></div>
-                    </div>
-                `;
-                div.onclick = () => {
-                    document.getElementById('target').value = i.plate + " - " + i.client;
-                    switchT('i-page', document.querySelectorAll('.tab')[1]);
-                };
-                res.appendChild(div);
-            });
-        }
+		function render(data) {
+			const res = document.getElementById('results'); res.innerHTML = '';
+			data.forEach(i => {
+				const active = i.status.includes("نشط") || i.status.toLowerCase().includes("active");
+				const div = document.createElement('div');
+				div.className = `car-card ${active ? 'active-side' : 'inactive-side'}`;
+				div.innerHTML = `
+					<span class="c-name">${i.client}</span>
+					<div class="c-plate">${i.plate}</div>
+					<div class="c-info"><b>النوع:</b> ${i.model} </div>
+					<div class="c-info"><b>اللون:</b> ${i.color}</div>
+					<div class="c-emp"><i class="fas fa-user-tie"></i> الموظف: ${i.emp}</div>
+					<div class="actions">
+						<div class="act-btn" onclick="vAction(()=>openEdit(${JSON.stringify(i).replace(/"/g, '&quot;')}), event)"><i class="fas fa-edit"></i></div>
+						<div class="act-btn" style="color:var(--danger)" onclick="vAction(()=>del(${i.row}), event)"><i class="fas fa-trash-alt"></i></div>
+					</div>
+				`;
+				div.onclick = () => {
+					document.getElementById('target').value = i.plate + " (" + i.client + ")";
+					switchT('i-page', document.querySelectorAll('.tab')[1]);
+				};
+				res.appendChild(div);
+			});
+		}
 
-        function search() {
-            const v = document.getElementById('search').value.toLowerCase();
-            render(db.filter(x => x.client.toLowerCase().includes(v) || x.plate.toLowerCase().includes(v) || x.emp.toLowerCase().includes(v)));
-        }
+		function toggleTheme() {
+			document.body.classList.toggle('dark');
+			document.getElementById('themeBtn').innerHTML = document.body.classList.contains('dark') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+		}
 
-        function vAction(cb, e) { if(e) e.stopPropagation(); if(prompt("رمز العمليات:") === "0707") cb(); else alert("خطأ!"); }
+		function toggleDesktop() {
+			document.body.classList.toggle('desktop');
+			document.getElementById('dBtn').classList.toggle('active');
+		}
 
-        function toggleMode(m) { 
-            document.body.classList.toggle(m); 
-            if(m === 'desktop') document.getElementById('dBtn').classList.toggle('active');
-        }
+		function search() {
+			const v = document.getElementById('search').value.toLowerCase();
+			render(db.filter(x => x.client.toLowerCase().includes(v) || x.plate.toLowerCase().includes(v) || x.emp.toLowerCase().includes(v)));
+		}
 
-        function openForm() { document.getElementById('m-title').innerText="إضافة"; document.getElementById('row-id').value=""; document.getElementById('modal').style.display='flex'; }
-        
-        function openEdit(item) {
-            document.getElementById('m-title').innerText="تعديل";
-            document.getElementById('row-id').value = item.row;
-            document.getElementById('f-c').value = item.client;
-            document.getElementById('f-p').value = item.plate;
-            document.getElementById('f-m').value = item.model;
-            document.getElementById('f-l').value = item.color;
-            document.getElementById('f-e').value = item.emp;
-            document.getElementById('f-s').value = item.status;
-            document.getElementById('modal').style.display='flex';
-        }
+		function vAction(cb, e) { if(e) e.stopPropagation(); const pw = prompt("رمز الصلاحية:"); if(pw === "0707") cb(); else if(pw) alert("الرمز خطأ!"); }
 
-        function closeModal() { document.getElementById('modal').style.display='none'; }
+		function openForm() { document.getElementById('m-title').innerText="إضافة مركبة"; document.getElementById('row-id').value=""; document.querySelectorAll('#modal input').forEach(i=>i.value=""); document.getElementById('modal').style.display='flex'; }
+		
+		function openEdit(item) {
+			document.getElementById('m-title').innerText="تعديل البيانات";
+			document.getElementById('row-id').value = item.row;
+			document.getElementById('f-c').value = item.client;
+			document.getElementById('f-p').value = item.plate;
+			document.getElementById('f-m').value = item.model;
+			document.getElementById('f-l').value = item.color;
+			document.getElementById('f-e').value = item.emp;
+			document.getElementById('f-s').value = item.status;
+			document.getElementById('modal').style.display='flex';
+		}
 
-        async function save() {
-            const rid = document.getElementById('row-id').value;
-            const payload = { action: rid ? 'edit_car' : 'add_car', row: rid, client: document.getElementById('f-c').value, plate: document.getElementById('f-p').value, model: document.getElementById('f-m').value, color: document.getElementById('f-l').value, emp: document.getElementById('f-e').value, status: document.getElementById('f-s').value };
-            await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            location.reload();
-        }
+		function closeModal() { document.getElementById('modal').style.display='none'; }
 
-        async function del(r) { if(confirm("حذف؟")) { await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action:'delete_car', row:r}) }); location.reload(); } }
+		async function save() {
+			const rid = document.getElementById('row-id').value;
+			const payload = { action: rid ? 'edit_car' : 'add_car', row: rid, client: document.getElementById('f-c').value, plate: document.getElementById('f-p').value, model: document.getElementById('f-m').value, color: document.getElementById('f-l').value, emp: document.getElementById('f-e').value, status: document.getElementById('f-s').value };
+			await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+			alert("تم الحفظ بنجاح ✓"); location.reload();
+		}
 
-        async function sendInv() {
-            const p = document.getElementById('target').value;
-            if(!p) return alert("اختر مركبة");
-            await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action:'log_entry', plate:p, unit:document.getElementById('unit').value, slot:document.getElementById('slot').value}) });
-            alert("تم الحصر"); location.reload();
-        }
+		async function del(r) { if(confirm("هل أنت متأكد من الحذف؟")) { await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action:'delete_car', row:r}) }); location.reload(); } }
 
-        function switchT(p, el) {
-            document.querySelectorAll('section').forEach(s => s.style.display='none');
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(p).style.display='block'; el.classList.add('active');
-        }
-    </script>
+		async function sendInv() {
+			const p = document.getElementById('target').value;
+			if(!p) return alert("يرجى اختيار مركبة");
+			await fetch(SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action:'log_entry', plate:p, unit:document.getElementById('unit').value, slot:document.getElementById('slot').value}) });
+			alert("تم تسجيل الحصر بنجاح"); location.reload();
+		}
+
+		function switchT(p, el) {
+			document.querySelectorAll('section').forEach(s => s.style.display='none');
+			document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+			document.getElementById(p).style.display='block'; el.classList.add('active');
+		}
+	</script>
 </body>
 </html>
