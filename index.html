@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام مواقف برج مجدول</title>
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a84ff">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="logo-192.png">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
@@ -30,7 +24,13 @@
         body {
             margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
             background-color: var(--bg-color); color: var(--text-color); transition: all 0.3s ease; padding-bottom: 100px;
-            -webkit-tap-highlight-color: transparent; /* تحسين تجربة اللمس في التطبيق */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* صفحة تسجيل الدخول */
+        #login-page {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--bg-color); z-index: 5000; display: flex; align-items: center; justify-content: center;
         }
 
         header {
@@ -84,12 +84,23 @@
         .nav-tab i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-tab.active { color: var(--accent); }
 
-        .support-float { position: fixed; bottom: 100px; left: 20px; width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1500; cursor: pointer; }
-        
-        #editModal, #addModal, #supportModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: none; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        /* تعديل النوافذ المنبثقة لتظهر بشكل صحيح */
+        #editModal, #addModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 2000; display: none; overflow-y: auto; padding: 20px; box-sizing: border-box; }
     </style>
 </head>
 <body class="dark">
+
+    <div id="login-page">
+        <div class="glass-panel" style="max-width: 350px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="majdoul.png" style="height: 50px;" alt="Logo">
+                <h3>تسجيل الدخول</h3>
+            </div>
+            <input type="text" id="user" placeholder="اسم المستخدم">
+            <input type="password" id="pass" placeholder="كلمة المرور">
+            <button class="submit-btn" onclick="handleLogin()">دخول</button>
+        </div>
+    </div>
 
     <header>
         <div class="header-content">
@@ -97,6 +108,7 @@
             <div class="top-actions">
                 <i class="fas fa-desktop icon-btn" onclick="document.body.classList.toggle('desktop-mode')"></i>
                 <i class="fas fa-adjust icon-btn" onclick="document.body.classList.toggle('dark')"></i>
+                <i class="fas fa-sign-out-alt icon-btn" onclick="location.reload()"></i>
             </div>
             <img src="linkexpert.png" class="logo-link" alt="LinkExpert Logo">
         </div>
@@ -128,22 +140,44 @@
         </section>
     </div>
 
+    <div id="editModal">
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin:0">تعديل البيانات</h2>
+                <i class="fas fa-times icon-btn" onclick="document.getElementById('editModal').style.display='none'"></i>
+            </div>
+            <input type="hidden" id="editIdx">
+            <input type="text" id="editClient" placeholder="العميل">
+            <input type="text" id="editPlate" placeholder="اللوحة">
+            <input type="text" id="editModel" placeholder="الموديل">
+            <input type="text" id="editEmp" placeholder="الموظف">
+            <select id="editStatus"><option value="نشط">نشط</option><option value="غير نشط">غير نشط</option></select>
+            <button class="submit-btn" onclick="saveEdit()">حفظ التعديلات</button>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <div class="nav-tab active" onclick="switchPage('page-search', this)"><i class="fas fa-search"></i><span>البحث</span></div>
         <div class="nav-tab" onclick="switchPage('page-inventory', this)"><i class="fas fa-plus-square"></i><span>التسجيل</span></div>
     </nav>
 
     <script>
-        // تفعيل الـ PWA Service Worker للعمل بدون إنترنت
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW error:', err));
-            });
-        }
-
-        let db = []; let activeCar = null;
+        let db = []; 
+        let activeCar = null;
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynq-4N4tP722M_qtJuZ73hMpE_Q3JUj45IDRMUrDkX0kZK2kIA7SNaMD9oQc3e2D0_/exec"; 
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
+
+        // تسجيل الدخول
+        function handleLogin() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if((u === "abdullah@awtad" && p === "3344") || (u === "asim@link" && p === "0707")) {
+                document.getElementById('login-page').style.display = 'none';
+                loadData();
+            } else {
+                alert("بيانات الدخول غير صحيحة");
+            }
+        }
 
         async function loadData() {
             try {
@@ -182,10 +216,36 @@
         }
 
         function checkAuth(mode, idx) {
-            const p = prompt("يُرجى إدخال كلمة المرور:");
+            // استخدام حقل كلمة مرور مخفي
+            const p = prompt("يُرجى إدخال كلمة المرور للعمليات الحساسة:");
             if(p !== "0707") return alert("خطأ!");
-            if(mode === 'add') document.getElementById('addModal').style.display = 'block';
-            // منطق التعديل يضاف هنا
+            
+            if(mode === 'edit') {
+                const car = db[idx];
+                document.getElementById('editIdx').value = idx;
+                document.getElementById('editClient').value = car.client;
+                document.getElementById('editPlate').value = car.plate;
+                document.getElementById('editModel').value = car.model;
+                document.getElementById('editEmp').value = car.emp;
+                document.getElementById('editStatus').value = car.status;
+                document.getElementById('editModal').style.display = 'block';
+            } else if(mode === 'add') {
+                alert("ميزة الإضافة تتطلب ربط النموذج بـ Apps Script");
+            }
+        }
+
+        function saveEdit() {
+            const idx = document.getElementById('editIdx').value;
+            const data = {
+                action: 'edit_car',
+                rowIdx: parseInt(idx) + 2, // تحويل للسطر الصحيح في Sheet
+                client: document.getElementById('editClient').value,
+                plate: document.getElementById('editPlate').value,
+                model: document.getElementById('editModel').value,
+                emp: document.getElementById('editEmp').value,
+                status: document.getElementById('editStatus').value
+            };
+            post(data);
         }
 
         function post(data) { 
@@ -208,8 +268,6 @@
             el.classList.add('active'); 
             window.scrollTo(0,0);
         }
-        
-        loadData();
     </script>
 </body>
 </html>
