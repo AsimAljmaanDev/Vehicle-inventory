@@ -1,251 +1,308 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>Link Expert | Parking Management</title>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-	<style>
-		:root {
-			--bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.7);
-			--text-color: #1c1c1e; --accent: #007aff; 
-			--glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(0, 0, 0, 0.05);
-			--status-active: #34c759; --status-inactive: #ff3b30;
-			--liquid-glow: rgba(0, 122, 255, 0.3); --container-width: 500px;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Link Expert | Parking System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f2f2f7; --card-bg: rgba(255, 255, 255, 0.7);
+            --text-color: #1c1c1e; --accent: #007aff; 
+            --glass-border: rgba(0, 0, 0, 0.1); --input-bg: rgba(0, 0, 0, 0.05);
+            --status-active: #34c759; --status-inactive: #ff3b30;
+            --liquid-glow: rgba(0, 122, 255, 0.3); --container-width: 500px;
+        }
 
-		body.dark {
-			--bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.85);
-			--text-color: #ffffff; --accent: #0a84ff;
-			--glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(255, 255, 255, 0.1);
-			--liquid-glow: rgba(10, 132, 255, 0.4);
-		}
+        body.dark {
+            --bg-color: #000000; --card-bg: rgba(28, 28, 30, 0.85);
+            --text-color: #ffffff; --accent: #0a84ff;
+            --glass-border: rgba(255, 255, 255, 0.15); --input-bg: rgba(255, 255, 255, 0.1);
+            --liquid-glow: rgba(10, 132, 255, 0.4);
+        }
 
-		body.desktop-mode { --container-width: 1000px; }
+        body.desktop-mode { --container-width: 1000px; }
 
-		body {
-			margin: 0; background: var(--bg-color); color: var(--text-color);
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-			transition: all 0.4s ease; min-height: 100vh; padding-bottom: 120px;
-		}
+        body {
+            margin: 0; background: var(--bg-color); color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            transition: all 0.4s ease; min-height: 100vh; padding-bottom: 120px;
+        }
 
-		header {
-			background: var(--card-bg); backdrop-filter: blur(25px) saturate(180%);
-			border-bottom: 1px solid var(--glass-border); padding: 12px 20px;
-			position: sticky; top: 0; z-index: 1000;
-		}
+        /* الهيدر بنمط iOS 26 */
+        header {
+            background: var(--card-bg); backdrop-filter: blur(25px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border); padding: 12px 20px;
+            position: sticky; top: 0; z-index: 1000;
+        }
 
-		.header-content { 
-			max-width: var(--container-width); margin: 0 auto; 
-			display: flex; justify-content: space-between; align-items: center; 
-		}
+        .header-content { 
+            max-width: var(--container-width); margin: 0 auto; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
 
-		/* حاوية الشعار في المكان المناسب */
-		.logo-container {
-			display: flex; align-items: center; gap: 10px;
-		}
+        .logo-container { display: flex; align-items: center; gap: 10px; }
+        .main-logo { height: 32px; filter: drop-shadow(0 0 5px rgba(10, 132, 255, 0.2)); }
 
-		.main-logo {
-			height: 32px; filter: drop-shadow(0 0 5px rgba(10, 132, 255, 0.2));
-			transition: 0.3s;
-		}
+        .top-actions { display: flex; gap: 10px; }
+        .icon-btn {
+            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; border: 1.5px solid var(--accent);
+            background: rgba(10, 132, 255, 0.05); color: var(--accent); cursor: pointer;
+            transition: 0.3s; font-size: 14px;
+        }
+        .icon-btn:hover { background: var(--accent); color: white; box-shadow: 0 0 15px var(--liquid-glow); }
 
-		.top-actions { display: flex; gap: 8px; }
-		
-		.icon-btn {
-			width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-			border-radius: 50%; border: 1.5px solid var(--accent);
-			background: rgba(10, 132, 255, 0.05); color: var(--accent); cursor: pointer;
-			transition: 0.3s; font-size: 13px;
-		}
-		
-		.icon-btn:hover { background: var(--accent); color: white; box-shadow: 0 0 15px var(--liquid-glow); }
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 15px; }
 
-		.container { max-width: var(--container-width); margin: 0 auto; padding: 15px; }
+        .glass-panel {
+            background: var(--card-bg); backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid var(--glass-border); border-radius: 28px;
+            padding: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box;
+        }
 
-		.glass-panel {
-			background: var(--card-bg); backdrop-filter: blur(30px) saturate(180%);
-			border: 1px solid var(--glass-border); border-radius: 28px;
-			padding: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box;
-		}
+        input, select {
+            width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--glass-border);
+            background: var(--input-bg); color: var(--text-color); font-size: 16px;
+            margin-bottom: 12px; outline: none; box-sizing: border-box; transition: 0.3s;
+        }
 
-		input {
-			width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--glass-border);
-			background: var(--input-bg); color: var(--text-color); font-size: 16px;
-			margin-bottom: 12px; outline: none; box-sizing: border-box; transition: 0.3s;
-		}
+        .car-card {
+            background: var(--card-bg); border-radius: 24px; padding: 20px; margin-bottom: 15px;
+            border: 1px solid var(--glass-border); position: relative; transition: 0.3s;
+            cursor: pointer; overflow: hidden;
+        }
 
-		.car-card {
-			background: var(--card-bg); border-radius: 24px; padding: 20px; margin-bottom: 15px;
-			border: 1px solid var(--glass-border); position: relative; transition: 0.3s;
-			cursor: pointer; overflow: hidden;
-		}
+        .active-indicator { border-right: 5px solid var(--status-active); }
+        .inactive-indicator { border-right: 5px solid var(--status-inactive); }
 
-		.active-indicator { border-right: 5px solid var(--status-active); }
-		.inactive-indicator { border-right: 5px solid var(--status-inactive); }
+        .share-btn {
+            position: absolute; left: 15px; bottom: 15px; width: 38px; height: 38px;
+            border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent);
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
 
-		.share-btn {
-			position: absolute; left: 15px; bottom: 15px; width: 36px; height: 36px;
-			border-radius: 50%; border: 1.2px solid var(--accent); color: var(--accent);
-			display: flex; align-items: center; justify-content: center; font-size: 13px;
-		}
+        .submit-btn {
+            width: 100%; padding: 18px; background: var(--accent); color: white;
+            border: none; border-radius: 18px; font-size: 16px; font-weight: 600; cursor: pointer;
+        }
 
-		.submit-btn {
-			width: 100%; padding: 18px; background: var(--accent); color: white;
-			border: none; border-radius: 18px; font-size: 16px; font-weight: 600; cursor: pointer;
-		}
+        .bottom-nav {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            width: 85%; max-width: 380px; background: var(--card-bg);
+            backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
+            border-radius: 40px; display: flex; padding: 6px; z-index: 1000;
+        }
 
-		.bottom-nav {
-			position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-			width: 80%; max-width: 350px; background: var(--card-bg);
-			backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
-			border-radius: 40px; display: flex; padding: 5px; z-index: 1000;
-		}
+        .nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; padding: 12px; border-radius: 35px; }
+        .nav-tab.active { background: var(--accent); color: white; }
 
-		.nav-tab { flex: 1; text-align: center; color: #8e8e93; cursor: pointer; padding: 12px; border-radius: 35px; }
-		.nav-tab.active { background: var(--accent); color: white; }
+        #toast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: white; padding: 12px 30px;
+            border-radius: 50px; transition: 0.5s; z-index: 10000;
+        }
 
-		.footer-branding {
-			text-align: center; margin-top: 30px; font-size: 11px; 
-			letter-spacing: 1px; color: var(--text-color); opacity: 0.4;
-			text-transform: uppercase; font-weight: bold;
-		}
-
-		#login-page {
-			position: fixed; inset: 0; background: var(--bg-color); z-index: 5000;
-			display: flex; align-items: center; justify-content: center;
-		}
-	</style>
+        #login-page {
+            position: fixed; inset: 0; background: var(--bg-color); z-index: 5000;
+            display: flex; align-items: center; justify-content: center;
+        }
+    </style>
 </head>
 <body class="dark">
 
-	<div id="login-page">
-		<div class="glass-panel" style="max-width: 320px; text-align: center;">
-			<img src="linkexpert.png" style="height: 50px; margin-bottom: 20px;">
-			<h3 style="margin-bottom: 25px;">Parking Management</h3>
-			<input type="text" id="user" placeholder="Identity">
-			<input type="password" id="pass" placeholder="Security Key">
-			<button class="submit-btn" onclick="handleLogin()">Unlock Access</button>
-		</div>
-	</div>
+    <div id="toast">تمت العملية بنجاح ✓</div>
 
-	<header>
-		<div class="header-content">
-			<div class="logo-container">
-				<img src="linkexpert.png" class="main-logo" alt="Link Expert Logo">
-				<span style="font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;">PARKING</span>
-			</div>
-			<div class="top-actions">
-				<div class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-adjust"></i></div>
-				<div class="icon-btn" onclick="document.body.classList.toggle('desktop-mode')"><i class="fas fa-desktop"></i></div>
-				<div class="icon-btn" style="border-color: #8e8e93; color: #8e8e93;" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></div>
-			</div>
-		</div>
-	</header>
+    <div id="login-page">
+        <div class="glass-panel" style="max-width: 320px; text-align: center;">
+            <img src="linkexpert.png" style="height: 50px; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 25px;">Parking Management</h3>
+            <input type="text" id="user" placeholder="User Name">
+            <input type="password" id="pass" placeholder="Security Key">
+            <button class="submit-btn" onclick="handleLogin()">Unlock Access</button>
+        </div>
+    </div>
 
-	<div class="container">
-		<section id="page-search">
-			<div class="glass-panel" style="margin-bottom: 20px;">
-				<input type="text" id="plateSearch" placeholder="🔢 ابحث برقم اللوحة..." onkeyup="executeCombinedSearch()">
-				<input type="text" id="infoSearch" placeholder="👤 ابحث بالاسم أو العميل..." onkeyup="executeCombinedSearch()">
-				<div id="searchCounter" style="font-size: 11px; opacity: 0.5; text-align: center; margin-bottom: 10px;">جاري الاتصال...</div>
-				<button class="submit-btn" style="background: var(--status-active);" onclick="checkAuth()">+ مركبة جديدة</button>
-			</div>
-			<div id="cardsResult"></div>
-			<div class="footer-branding">Powered by Link Expert © 2026</div>
-		</section>
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="linkexpert.png" class="main-logo" alt="Link Expert">
+                <span style="font-weight: 700; font-size: 0.9rem;">LINK EXPERT</span>
+            </div>
+            <div class="top-actions">
+                <div class="icon-btn" onclick="document.body.classList.toggle('dark')"><i class="fas fa-adjust"></i></div>
+                <div class="icon-btn" onclick="document.body.classList.toggle('desktop-mode')"><i class="fas fa-desktop"></i></div>
+                <div class="icon-btn" style="border-color:#8e8e93; color:#8e8e93;" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></div>
+            </div>
+        </div>
+    </header>
 
-		<section id="page-inventory" style="display: none;">
-			<div class="glass-panel">
-				<h3 style="margin-top:0">📝 تسجيل حصر</h3>
-				<input type="text" id="selectedLabel" readonly>
-				<select id="unitSelect">
-					<option>P1 Floor</option><option>P1-VIP</option><option>P2 Floor</option><option>P3 Floor</option>
-				</select>
-				<input type="number" id="slotNo" placeholder="رقم الموقف">
-				<button class="submit-btn" onclick="confirmEntry()">تأكيد وإرسال</button>
-			</div>
-			<div class="footer-branding">Operated by Asim</div>
-		</section>
-	</div>
+    <div class="container">
+        <section id="page-search">
+            <div class="glass-panel" style="margin-bottom: 20px;">
+                <input type="text" id="plateSearch" placeholder="🔢 ابحث برقم اللوحة..." onkeyup="executeCombinedSearch()">
+                <input type="text" id="infoSearch" placeholder="👤 ابحث بالاسم أو العميل..." onkeyup="executeCombinedSearch()">
+                <div id="searchCounter" style="font-size: 11px; opacity: 0.5; text-align: center; margin-bottom: 10px;">جاري المزامنة...</div>
+                <button class="submit-btn" style="background: var(--status-active);" onclick="checkAuth()">+ إضافة مركبة</button>
+            </div>
+            <div id="cardsResult"></div>
+        </section>
 
-	<nav class="bottom-nav">
-		<div class="nav-tab active" onclick="switchTab('page-search', this)"><i class="fas fa-search"></i></div>
-		<div class="nav-tab" onclick="switchTab('page-inventory', this)"><i class="fas fa-parking"></i></div>
-	</nav>
+        <section id="page-inventory" style="display: none;">
+            <div class="glass-panel">
+                <h3 style="margin-top:0">📝 تسجيل حصر المواقف</h3>
+                <label style="font-size: 11px; margin-right: 5px;">المركبة المختارة:</label>
+                <input type="text" id="selectedLabel" readonly style="border-style: dashed; opacity: 0.8;">
+                <select id="unitSelect">
+                    <option>P1</option><option>P1-VIP</option><option>P2</option><option>P3</option><option>P4</option><option>Landscape</option>
+                </select>
+                <input type="number" id="slotNo" placeholder="أدخل رقم الموقف">
+                <button class="submit-btn" onclick="confirmEntry(event)">تأكيد ورفع الحصر</button>
+            </div>
+        </section>
+    </div>
 
-	<script>
-		let db = [];
-		const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
-		const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
+    <nav class="bottom-nav">
+        <div class="nav-tab active" onclick="switchTab('page-search', this)"><i class="fas fa-search"></i></div>
+        <div class="nav-tab" onclick="switchTab('page-inventory', this)"><i class="fas fa-parking"></i></div>
+    </nav>
 
-		function handleLogin() {
-			const u = document.getElementById('user').value, p = document.getElementById('pass').value;
-			if((u === "abdullah@awtad" && p === "3344") || (u === "asim@link" && p === "0707")) {
-				document.getElementById('login-page').style.display = 'none';
-				loadData();
-			} else alert("Access Denied");
-		}
+    <script>
+        let db = [];
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmc7LZApwNuOjHid0zNyUAXuoSH65xzMJg6sXyuQ3OdTToRLt0iS4RNO0e-Xl9qWST/exec";
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRytRL1hkkvWkTEnU0oSTpUSG39VuigUKFyPYcEHLwX0W76gNiGLX5sKNIXSHki16Z6JCBwE8LpW8MU/pub?gid=917848047&single=true&output=csv";
 
-		async function loadData() {
-			try {
-				const res = await fetch(CSV_URL);
-				const text = await res.text();
-				const rows = text.split('\n').filter(r => r.trim() !== '');
-				db = rows.slice(1).map(r => {
-					const c = r.split(',').map(f => f.trim());
-					return { client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
-				});
-				render(db);
-				document.getElementById('searchCounter').innerText = `إجمالي المركبات: ${db.length}`;
-			} catch(e) { console.error(e); }
-		}
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.top = '30px';
+            setTimeout(() => t.style.top = '-100px', 3000);
+        }
 
-		function executeCombinedSearch() {
-			const pVal = document.getElementById('plateSearch').value.toLowerCase();
-			const iVal = document.getElementById('infoSearch').value.toLowerCase();
-			const filtered = db.filter(i => i.plate.toLowerCase().includes(pVal) && (i.emp.toLowerCase().includes(iVal) || i.client.toLowerCase().includes(iVal)));
-			render(filtered);
-		}
+        function handleLogin() {
+            const u = document.getElementById('user').value, p = document.getElementById('pass').value;
+            if((u === "abdullah@awtad" && p === "3344") || (u === "asim@link" && p === "0707")) {
+                document.getElementById('login-page').style.display = 'none';
+                loadData();
+            } else alert("بيانات الدخول خاطئة");
+        }
 
-		function render(data) {
-			const res = document.getElementById('cardsResult');
-			res.innerHTML = '';
-			data.slice(0, 15).forEach(i => {
-				const active = i.status === 'نشط' || i.status === 'Active';
-				const card = document.createElement('div');
-				card.className = `car-card ${active ? 'active-indicator' : 'inactive-indicator'}`;
-				card.innerHTML = `
-					<div style="font-size:10px; opacity:0.5; font-weight:bold;">${i.client}</div>
-					<div style="font-size:22px; font-weight:800; color:var(--accent); margin:5px 0;">${i.plate}</div>
-					<div style="font-size:13px; opacity:0.8;">${i.model} • ${i.color}</div>
-					<div style="font-size:13px; margin-top:8px; font-weight:600;"><i class="fas fa-user-circle"></i> ${i.emp}</div>
-					<div class="share-btn" onclick="shareData('${i.plate}', '${i.emp}', event)"><i class="fas fa-share-alt"></i></div>
-				`;
-				card.onclick = () => {
-					document.getElementById('selectedLabel').value = i.plate + " (" + i.emp + ")";
-					switchTab('page-inventory', document.querySelectorAll('.nav-tab')[1]);
-				};
-				res.appendChild(card);
-			});
-		}
+        async function loadData() {
+            try {
+                const res = await fetch(CSV_URL);
+                const text = await res.text();
+                const rows = text.split('\n').filter(r => r.trim() !== '');
+                db = rows.slice(1).map(r => {
+                    const c = r.split(',').map(f => f.trim());
+                    return { client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
+                });
+                render(db);
+                document.getElementById('searchCounter').innerText = `إجمالي المركبات: ${db.length}`;
+            } catch(e) { showToast("فشل مزامنة البيانات"); }
+        }
 
-		function shareData(plate, emp, e) {
-			e.stopPropagation();
-			const text = `بيانات مواقف:\nاللوحة: ${plate}\nالموظف: ${emp}\nبواسطة: Link Expert`;
-			if (navigator.share) navigator.share({ title: 'Parking Data', text: text });
-			else window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
-		}
+        function executeCombinedSearch() {
+            const pVal = document.getElementById('plateSearch').value.toLowerCase();
+            const iVal = document.getElementById('infoSearch').value.toLowerCase();
+            const filtered = db.filter(i => 
+                i.plate.toLowerCase().includes(pVal) && 
+                (i.emp.toLowerCase().includes(iVal) || i.client.toLowerCase().includes(iVal))
+            );
+            render(filtered);
+        }
 
-		function checkAuth() {
-			if(prompt("رمز العمليات:") === "0707") alert("الإضافة متاحة في نسخة المسؤول");
-		}
+        function render(data) {
+            const res = document.getElementById('cardsResult');
+            res.innerHTML = '';
+            data.slice(0, 15).forEach(i => {
+                const active = i.status === 'نشط' || i.status === 'Active';
+                const card = document.createElement('div');
+                card.className = `car-card ${active ? 'active-indicator' : 'inactive-indicator'}`;
+                card.innerHTML = `
+                    <div style="font-size:10px; opacity:0.5;">${i.client}</div>
+                    <div style="font-size:22px; font-weight:800; color:var(--accent); margin:4px 0;">${i.plate}</div>
+                    <div style="font-size:13px; opacity:0.8;">${i.model} • ${i.color}</div>
+                    <div style="font-size:13px; margin-top:8px; font-weight:600;"><i class="fas fa-user-circle"></i> ${i.emp}</div>
+                    <div class="share-btn" onclick="shareData('${i.plate}', '${i.emp}', event)"><i class="fas fa-share-alt"></i></div>
+                `;
+                card.onclick = () => {
+                    document.getElementById('selectedLabel').value = i.plate + " (" + i.emp + ")";
+                    switchTab('page-inventory', document.querySelectorAll('.nav-tab')[1]);
+                };
+                res.appendChild(card);
+            });
+        }
 
-		function switchTab(id, el) {
-			document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-			document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
-			document.getElementById(id).style.display = 'block'; el.classList.add('active');
-		}
-	</script>
+        // دالة المشاركة الذكية
+        function shareData(plate, emp, e) {
+            e.stopPropagation();
+            const text = `نظام مواقف Link Expert:\nاللوحة: ${plate}\nالموظف: ${emp}`;
+            if (navigator.share) {
+                navigator.share({ title: 'Parking Data', text: text });
+            } else {
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+            }
+        }
+
+        // دالة رفع الحصر المحدثة
+        function confirmEntry(event) {
+            const plateInfo = document.getElementById('selectedLabel').value;
+            const unit = document.getElementById('unitSelect').value;
+            const slot = document.getElementById('slotNo').value;
+
+            if (!plateInfo || !slot) {
+                alert("يرجى اختيار مركبة وإدخال رقم الموقف");
+                return;
+            }
+
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "جاري الرفع... ⏳";
+            btn.disabled = true;
+
+            const data = {
+                action: 'log_entry',
+                plate: plateInfo,
+                unit: unit,
+                slot: slot,
+                timestamp: new Date().toLocaleString('ar-SA')
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                showToast("✅ تم رفع الحصر بنجاح");
+                document.getElementById('selectedLabel').value = "";
+                document.getElementById('slotNo').value = "";
+                btn.innerText = originalText;
+                btn.disabled = false;
+                setTimeout(() => {
+                    switchTab('page-search', document.querySelectorAll('.nav-tab')[0]);
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("فشل الإرسال، تحقق من الشبكة");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        function checkAuth() {
+            if(prompt("رمز العمليات:") === "0707") alert("الإضافة متاحة في لوحة التحكم الرئيسية");
+        }
+
+        function switchTab(id, el) {
+            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+            document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).style.display = 'block';
+            el.classList.add('active');
+            window.scrollTo(0,0);
+        }
+    </script>
 </body>
 </html>
