@@ -26,7 +26,6 @@
 			padding-bottom: 110px;
 		}
 
-		/* إصلاح الهيدر والشعار */
 		header {
 			background: var(--panel); border-bottom: 1px solid var(--border);
 			padding: 12px 20px; position: sticky; top: 0; z-index: 1000;
@@ -50,7 +49,15 @@
 
 		.container { width: 95%; max-width: var(--max-w); margin: 25px auto; }
 
-		/* البطاقة الاحترافية */
+		/* تنسيق صناديق البحث */
+		.search-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+			margin-bottom: 15px;
+		}
+		@media (max-width: 400px) { .search-grid { grid-template-columns: 1fr; } }
+
 		.car-card {
 			background: var(--panel); border-radius: 22px; padding: 22px; margin-bottom: 20px;
 			border: 1px solid var(--border); position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
@@ -69,13 +76,12 @@
 		.act-btn { width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border); background: var(--panel); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
 		input, select { 
-			width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 15px; 
+			width: 100%; padding: 16px; margin-bottom: 10px; border-radius: 15px; 
 			border: 2px solid var(--border); background: var(--panel); color: var(--text); font-size: 18px; box-sizing: border-box; outline: none;
 		}
 		input:focus { border-color: var(--accent); }
 		.main-btn { width: 100%; padding: 18px; border: none; border-radius: 18px; background: var(--accent); color: #fff; font-size: 19px; font-weight: 800; cursor: pointer; box-shadow: 0 5px 15px rgba(0,122,255,0.3); }
 
-		/* شاشة الدخول */
 		#login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
 		.login-card { background: var(--panel); padding: 45px 35px; border-radius: 30px; text-align: center; width: 85%; max-width: 380px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
 
@@ -119,7 +125,10 @@
 	<div class="container">
 		<section id="s-page">
 			<div style="background:var(--panel); padding: 20px; border-radius: 25px; margin-bottom: 25px; border: 1px solid var(--border);">
-				<input type="text" id="search" placeholder="🔍 ابحث بالاسم، اللوحة، الموظف..." onkeyup="search()">
+				<div class="search-grid">
+					<input type="text" id="searchPlate" placeholder="🔍 بحث باللوحة..." onkeyup="search()">
+					<input type="text" id="searchName" placeholder="👤 بحث بالاسم..." onkeyup="search()">
+				</div>
 				<button class="main-btn" style="background:var(--safe)" onclick="vAction(openForm)">+ إضافة مركبة جديدة</button>
 			</div>
 			<div id="results"></div>
@@ -179,7 +188,7 @@
 				const rows = t.split('\n').filter(x => x.trim() !== '');
 				db = rows.slice(1).map((x, i) => {
 					const c = x.split(',').map(y => y.trim());
-					return { row: i+2, client: c[0], plate: c[1], model: c[2], color: c[3], emp: c[4], status: c[5] || 'نشط' };
+					return { row: i+2, client: c[0] || '', plate: c[1] || '', model: c[2] || '', color: c[3] || '', emp: c[4] || '', status: c[5] || 'نشط' };
 				});
 				render(db);
 			} catch(e) { alert("فشل الاتصال بالخادم"); }
@@ -220,9 +229,18 @@
 			document.getElementById('dBtn').classList.toggle('active');
 		}
 
+		// دالة البحث المزدوجة الجديدة
 		function search() {
-			const v = document.getElementById('search').value.toLowerCase();
-			render(db.filter(x => x.client.toLowerCase().includes(v) || x.plate.toLowerCase().includes(v) || x.emp.toLowerCase().includes(v)));
+			const plateVal = document.getElementById('searchPlate').value.toLowerCase();
+			const nameVal = document.getElementById('searchName').value.toLowerCase();
+			
+			const filtered = db.filter(x => {
+				const matchPlate = x.plate.toLowerCase().includes(plateVal);
+				const matchName = x.client.toLowerCase().includes(nameVal);
+				return matchPlate && matchName;
+			});
+			
+			render(filtered);
 		}
 
 		function vAction(cb, e) { if(e) e.stopPropagation(); const pw = prompt("رمز الصلاحية:"); if(pw === "0707") cb(); else if(pw) alert("الرمز خطأ!"); }
